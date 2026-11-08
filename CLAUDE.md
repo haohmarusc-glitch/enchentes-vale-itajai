@@ -109,7 +109,8 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - O piloto do classificador, listas de permissão, segredos, retenção e público **não** mudam em PR de refatoração.
 
 ### Descida medida — REGRA (08/11/2026)
-- `scripts/medir_descida.py` mede quanto a cheia leva de uma régua à outra nas séries de 2026 (rede estadual
+- `scripts/medir_descida.py` confere a Tabela 7.5.1 da JICA com as séries de 2026: cada ponto medido a partir do
+  pico de Rio do Sul, régua por régua até Santa Regina (DC-11). Mede quanto a cheia leva de uma régua à outra (rede estadual
   consolidada + coletor + `serie-recente.json`), por cinco métodos (pico a pico, meia-subida, centro de massa,
   correlação da variação, DTW), com maré tirada por análise harmônica nas réguas de estuário e em Ilhota.
   Saída derivada: `data/descida-medida.json` e `docs/DESCIDA-MEDIDA.md` (`--gravar`); `--agora` projeta a cheia em curso.

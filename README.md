@@ -480,11 +480,14 @@ o projeto.
 
 ## Pendências
 
-- [x] **Medidor de descida (08/11/2026).** `scripts/medir_descida.py` mede o tempo entre as réguas nas cheias de 2026,
-  com cinco métodos e incerteza (bootstrap, Theil–Sen), maré tirada por análise harmônica. Relatório em
-  `docs/DESCIDA-MEDIDA.md`. Resultado de 08/11: Rio do Sul → Blumenau +6,6 h (JICA 7–10 h); Ascurra → Blumenau +5,4 h;
-  Brusque → DC-10 +1,9 h (alta); Vidal Ramos → Botuverá +5,2 h; no baixo vale, Itajaí e Ilhota crestam 1–4 h depois
-  de Blumenau (crista local, não a água de cima).
+- [x] **Medidor de descida — conferência da JICA (08/11/2026).** `scripts/medir_descida.py` mede cada ponto da Tabela 7.5.1
+  a partir do pico de Rio do Sul, régua por régua até Santa Regina (DC-11), com cinco métodos, IC90 por bootstrap e maré
+  tirada por análise harmônica. Relatório em `docs/DESCIDA-MEDIDA.md`. Resultado com as cheias de jul–nov/2026:
+  **Indaial e Blumenau batem com a JICA** (Blumenau +4,9 h, IC90 4,9–10,7 h; JICA 7–10 h); Ibirama cresta mais perto de
+  Rio do Sul que a tabela (Barragem Norte); Ilhota (+8,4 h) e Santa Regina (+13,4 h) vêm mais cedo que os 12–17 e 19–27 h da
+  tabela, mas inconclusivos (métodos e cheias discordam); Taió, Ituporanga, Timbó e Brusque inconclusivos; Apiúna sem
+  régua; Gaspar sem série contínua. Régua por régua: Rio do Sul → Lontras +0,8 h (alta), Ibirama → Ascurra +3,6 h (alta),
+  Brusque → DC-10 +1,7 h (alta).
   - [ ] Decidir (Jefferson) se o site mostra algum trecho medido ao lado da JICA. `transito.json` não mudou.
   - [ ] Rodar de novo quando a cheia de 07–08/11 terminar (a maior de 2026) e quando houver Gaspar.
 - [x] **Brusque: escala da postagem da Defesa Civil adotada (07/11/2026, decisão do Jefferson).** Com a DCSC-00019 em 5,00 m o site pintava EMERGÊNCIA (legenda da estação 79: 3,00/5,00, sem alerta) enquanto o município publicava 5,26 m em **NÍVEL DE ALERTA: 4,51 a 7,50 m**. outra postagem do mesmo dia (4,45 m às 14:30) traz "NÍVEL DE ATENÇÃO: até 3,10m à 4,50m". `cotas_m` passa a 3,10/4,51/7,51; a escala antiga fica em `cotas_substituidas_em_2026_11_07` e a fonte anterior em `fonte_cotas_anterior`. Gabarito da classificação revisto (casos de alerta novos; emergência a 7,51 e 8,60 m) e testes do bot e do validador atualizados.

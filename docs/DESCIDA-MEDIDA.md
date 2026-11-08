@@ -1,23 +1,47 @@
 # Descida medida — quanto tempo a cheia leva de uma régua à outra
 
-Gerado por `scripts/medir_descida.py` em 2026-11-08T00:24:32+00:00. Séries de 2026-07-19T21:10 a 2026-11-07T21:00 (hora de Brasília). **Não é o tempo que o site mostra** (`transito.json`, Tabela 7.5.1 da JICA): é o que as réguas viram nas cheias de 2026. Trocar o do site é decisão do Jefferson.
+Gerado por `scripts/medir_descida.py` em 2026-11-08T00:31:18+00:00. Séries de 2026-07-19T21:10 a 2026-11-07T21:20 (hora de Brasília). **Não é o tempo que o site mostra** (`transito.json`, Tabela 7.5.1 da JICA): é o que as réguas viram nas cheias de 2026. Trocar o do site é decisão do Jefferson.
 
 Atraso em horas a partir da crista de cima; negativo = lá embaixo cresta ANTES (chuva local, maré, afluente). Faixa = p25–p75 dos eventos; IC90 = intervalo de confiança de 90 % da mediana (bootstrap).
+
+## Comparação com a JICA
+
+Cada régua medida a partir do pico de Rio do Sul, como a Tabela 7.5.1 conta (colunas de 5 / 10 / 25 / 50 anos; as cabeceiras e Brusque só têm a de 5 anos). Veredito: o intervalo de confiança de 90 % da mediana medida (pico a pico) contra a faixa da tabela ± 1 h.
+
+| Ponto | JICA 5 / 10 / 25 / 50 anos | Medido (mediana, p25–p75) | IC90 | Cheias | Veredito |
+|---|---|---|---|---|---|
+| Taió (DCSC-00041) | -6 / — / — / — | +5.0 h (+0.0 a +7.6) | +0.0 a +7.6 | 9 | inconclusivo: os eventos discordam: p25–p75 de 7.6 h; os métodos discordam em 6.0 h |
+| Ibirama (DCSC-00020) | -5 / — / — / — | -1.6 h (-2.5 a +2.3) | -2.6 a +3.0 | 10 | mais lento que a JICA |
+| Timbó (DCSC-00023) | +0 / — / — / — | +0.2 h (-0.9 a +1.8) | -1.0 a +2.2 | 7 | inconclusivo: os métodos discordam em 7.1 h |
+| Ituporanga (DCSC-00039) | +1 / — / — / — | -5.4 h (-7.0 a +5.2) | -7.0 a +5.2 | 9 | inconclusivo: os eventos discordam: p25–p75 de 12.2 h; os métodos discordam em 4.1 h |
+| Brusque (DCSC-00019) | +6 / — / — / — | +2.8 h (+1.4 a +4.5) | +1.4 a +4.1 | 14 | inconclusivo: os métodos discordam em 8.4 h |
+| Apiúna | +9 / — / — / — | — | — | 0 | não medido: Apiúna: sem régua ao vivo: só a referência cadastral da ANA 83500000 (estacoes.json) |
+| Indaial (DCSC-00180) | +10 / +9 / +8 / +8 | +5.6 h (+3.4 a +6.8) | +2.2 a +7.0 | 4 | bate com a JICA |
+| Blumenau (PADKND + AlertaBlu) | +10 / +9 / +7 / +7 | +4.9 h (+4.9 a +9.5) | +4.9 a +10.7 | 7 | bate com a JICA |
+| Gaspar (estação 21 municipal) | +12 / +11 / +9 / +8 | — | — | 0 | não medido: Gaspar (estação 21 municipal): sem série contínua (80 leituras, 1% da grade de 10 min); atualização manual, horas ou dias entre leituras, parada desde 13/10: sem série contínua |
+| Ilhota (DCSC-00030) | +17 / +15 / +14 / +12 | +8.4 h (+5.4 a +11.0) | +5.6 a +11.5 | 12 | inconclusivo: os métodos discordam em 4.6 h |
+| Itajaí DC-11 Santa Regina (Volta de Cima) | +27 / +24 / +21 / +19 | +13.4 h (+7.4 a +16.6) | +7.4 a +16.6 | 9 | inconclusivo: os eventos discordam: p25–p75 de 9.2 h; os métodos discordam em 12.8 h |
+
+## Régua por régua
 
 | Trecho | Eventos | Pico a pico | Meia-subida | Centro de massa | Correlação | DTW | JICA | Confiança |
 |---|---|---|---|---|---|---|---|---|
 | Taió (DCSC-00041) → Rio do Sul (DCSC-00013) | 12 | -1.7 (-5.8 a +10.7) | +0.7 (-0.4 a +7.2) | +2.3 (-4.5 a +12.9) | +0.6 (-0.8 a +5.5) | -0.9 (-7.4 a +14.8) | 6 h | insuficiente: os eventos discordam: p25–p75 de 16.5 h |
 | Ituporanga (DCSC-00039) → Rio do Sul (DCSC-00013) | 11 | +7.0 (+4.9 a +12.2) | +6.7 (+5.7 a +7.5) | +9.5 (+5.8 a +13.4) | +6.1 (+5.1 a +7.6) | +8.9 (+7.2 a +14.9) | -1 h | insuficiente: os eventos discordam: p25–p75 de 7.3 h |
-| Rio do Sul (DCSC-00013) → Ascurra (DCSC-00003) | 13 | +2.1 (-0.3 a +4.7) | +3.5 (+0.8 a +3.8) | +2.5 (-2.0 a +4.0) | +3.0 (+1.0 a +5.2) | +1.5 (-2.3 a +3.7) | — | media |
-| Ascurra (DCSC-00003) → Blumenau (PADKND + AlertaBlu) | 10 | +5.4 (+4.3 a +7.5) | +2.5 (+0.3 a +4.1) | +5.5 (+3.1 a +6.5) | +4.7 (+3.7 a +5.3) | +5.6 (+3.8 a +6.1) | — | media |
-| Rio do Sul (DCSC-00013) → Blumenau (PADKND + AlertaBlu) | 8 | +6.6 (+4.9 a +10.8) | +3.1 (+1.5 a +6.2) | +5.5 (+4.9 a +9.5) | +4.2 (+3.8 a +8.8) | +6.4 (+4.1 a +7.5) | 7–10 h | media |
+| Rio do Sul (DCSC-00013) → Lontras (DCSC-00032) | 7 | +0.8 (-0.3 a +1.8) | +0.6 (-0.3 a +1.6) | +0.6 (-0.5 a +1.0) | +0.5 (+0.3 a +1.2) | +0.8 (-1.5 a +1.2) | — | alta |
+| Lontras (DCSC-00032) → Ascurra (DCSC-00003) | 6 | +1.8 (+0.2 a +4.8) | +1.0 (-1.0 a +3.9) | -1.4 (-1.9 a +1.4) | +1.4 (+0.2 a +3.4) | -0.3 (-1.2 a +0.8) | — | media |
+| Ibirama (DCSC-00020) → Ascurra (DCSC-00003) | 8 | +3.6 (+3.0 a +4.7) | +4.0 (+2.6 a +12.0) | +3.4 (+2.4 a +5.0) | +3.2 (+2.9 a +3.7) | +3.9 (+3.0 a +4.7) | — | alta |
+| Ascurra (DCSC-00003) → Indaial (DCSC-00180) | 5 | +2.8 (+1.4 a +2.9) | -0.6 (-5.7 a +1.7) | +1.5 (-0.6 a +1.7) | +1.8 (+1.7 a +2.2) | +2.1 (+2.0 a +2.2) | — | media |
+| Timbó (DCSC-00023) → Indaial (DCSC-00180) | 4 | +5.6 (+2.7 a +11.4) | +5.6 (+4.3 a +7.1) | +6.6 (+5.3 a +13.7) | +4.2 (+2.9 a +5.0) | +7.1 (+4.2 a +12.5) | 10 h | insuficiente: os eventos discordam: p25–p75 de 8.8 h |
+| Indaial (DCSC-00180) → Blumenau (PADKND + AlertaBlu) | 4 | +3.8 (+2.5 a +4.3) | +2.7 (+2.0 a +2.8) | +3.6 (+2.2 a +4.2) | +3.3 (+2.1 a +3.9) | +3.7 (+2.2 a +4.2) | -1–0 h | media |
+| Blumenau (PADKND + AlertaBlu) → Gaspar (estação 21 municipal) | — | Gaspar (estação 21 municipal): sem série contínua (80 leituras, 1% da grade de 10 min); atualização manual, horas ou dias entre leituras, parada desde 13/10: sem série contínua | | | | | 1–2 h | — |
 | Blumenau (PADKND + AlertaBlu) → Ilhota (DCSC-00030) | 10 | +3.7 (+0.7 a +4.7) | +1.9 (+0.0 a +3.0) | +2.0 (-2.4 a +3.4) | +2.5 (+2.3 a +2.5) | +2.2 (-1.4 a +3.2) | 5–7 h | media |
-| Ilhota (DCSC-00030) → Itajaí DC-11 Volta de Cima | 19 | +5.3 (-0.5 a +18.3) | -0.0 (-0.8 a +12.3) | +3.5 (+0.6 a +22.1) | -0.5 (-0.5 a -0.4) | -0.5 (-0.5 a +0.7) | 7–10 h | insuficiente: os eventos discordam: p25–p75 de 18.8 h; os métodos discordam em 5.8 h |
-| Blumenau (PADKND + AlertaBlu) → Itajaí DC-11 Volta de Cima | 10 | +1.5 (+0.2 a +4.6) | +1.7 (-3.5 a +3.3) | +1.8 (-0.4 a +3.7) | +3.7 (+3.7 a +3.7) | +3.6 (-1.4 a +4.0) | 12–17 h | media |
-| Blumenau (PADKND + AlertaBlu) → Itajaí DC-02 Praça Celso Pereira | 3 | +6.8 (+2.4 a +19.8) | +11.1 (+3.2 a +19.1) | +2.5 (+2.5 a +2.5) | -3.4 (-3.6 a -3.2) | +14.7 (+6.3 a +23.1) | 12–17 h | insuficiente: os eventos discordam: p25–p75 de 17.4 h; só um método achou forma comparável nas duas réguas; sem segundo método, não há como conferir |
+| Ilhota (DCSC-00030) → Itajaí DC-11 Santa Regina (Volta de Cima) | 18 | +2.8 (-0.5 a +20.3) | -0.1 (-0.8 a +12.3) | +3.1 (+0.5 a +24.6) | -0.5 (-0.5 a -0.4) | -0.5 (-0.7 a +0.1) | 7–10 h | insuficiente: os eventos discordam: p25–p75 de 20.8 h |
+| Blumenau (PADKND + AlertaBlu) → Itajaí DC-11 Santa Regina (Volta de Cima) | 8 | +1.5 (-0.1 a +5.2) | +1.2 (-3.5 a +3.9) | +3.2 (+0.2 a +3.7) | +3.7 (+3.7 a +3.7) | +3.3 (-2.6 a +4.1) | 12–17 h | media |
+| Blumenau (PADKND + AlertaBlu) → Itajaí DC-02 Praça Celso Pereira | 3 | +6.8 (+2.4 a +19.8) | +11.1 (+3.2 a +19.1) | +2.5 (+2.5 a +2.5) | -3.4 (-3.6 a -3.2) | +14.7 (+6.3 a +23.1) | — | insuficiente: os eventos discordam: p25–p75 de 17.4 h; só um método achou forma comparável nas duas réguas; sem segundo método, não há como conferir |
 | Vidal Ramos (DCSC-00024) → Botuverá (DCSC-00018) | 14 | +5.2 (+4.4 a +6.4) | +7.3 (+6.4 a +27.8) | +6.4 (+4.7 a +7.1) | +5.7 (+5.1 a +7.3) | +6.3 (+4.9 a +7.0) | — | media |
 | Botuverá (DCSC-00018) → Brusque (DCSC-00019) | 14 | +7.0 (+6.3 a +8.4) | +2.3 (-6.0 a +6.0) | +6.3 (+4.3 a +7.2) | +6.3 (+5.6 a +7.0) | +6.5 (+4.5 a +7.7) | — | insuficiente: os métodos discordam em 4.7 h |
-| Brusque (DCSC-00019) → Itajaí DC-10 Limoeiro | 11 | +1.9 (+1.2 a +2.5) | +0.2 (-0.8 a +2.2) | +1.8 (+1.0 a +7.8) | +1.2 (+0.8 a +1.5) | +1.4 (+0.1 a +1.8) | — | alta |
+| Brusque (DCSC-00019) → Itajaí DC-10 Limoeiro | 10 | +1.7 (+1.2 a +2.4) | +0.2 (-0.8 a +2.2) | +1.5 (+1.0 a +2.2) | +1.2 (+0.8 a +1.5) | +1.4 (+0.1 a +1.8) | — | alta |
 
 ## Evento a evento
 
@@ -79,30 +103,62 @@ Theil–Sen: -0.60 h por metro de amplitude em cima (negativo = cheia maior desc
 
 Theil–Sen: -3.37 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
 
-### Rio do Sul (DCSC-00013) → Ascurra (DCSC-00003)
+### Rio do Sul (DCSC-00013) → Lontras (DCSC-00032)
 
 | Crista em cima | Pico (zero da régua) | Crista embaixo | pico a pico | meia-subida | centro de massa | correlação | DTW | Obs. |
 |---|---|---|---|---|---|---|---|---|
-| 2026-07-22 15:40 | 5.76 m | 2026-07-22 19:55 | +4.2 | +3.5 | +4.0 | +5.7 | +4.3 |  |
-| 2026-07-30 07:30 | 4.43 m | 2026-07-30 19:00 | +11.5 | +3.5 | +4.0 | — | +6.3 |  |
+| 2026-07-22 15:40 | 5.76 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-07-30 07:30 | 4.43 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-08-13 06:00 | 4.66 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-08-15 12:30 | 5.51 m | 2026-08-15 14:35 | +2.1 | +0.8 | +1.8 | +1.7 | +2.7 |  |
+| 2026-08-15 12:30 | 5.51 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-08-29 23:35 | 3.83 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-09-01 05:35 | 7.06 m | 2026-09-01 05:40 | +0.1 | -0.4 | -2.4 | +0.3 | -2.7 |  |
-| 2026-09-08 11:50 | 4.78 m | 2026-09-08 19:10 | +7.3 | +6.4 | +5.1 | +6.8 | +1.5 |  |
-| 2026-09-12 00:25 | 6.05 m | 2026-09-12 00:05 | -0.3 | -2.7 | -2.8 | -0.3 | -2.3 |  |
-| 2026-09-20 13:25 | 5.45 m | 2026-09-20 18:05 | +4.7 | +3.6 | +2.5 | +3.7 | +3.7 |  |
-| 2026-09-22 09:15 | 6.48 m | 2026-09-22 07:40 | -1.6 | -0.6 | -2.0 | +1.0 | -3.3 |  |
-| 2026-09-29 22:15 | 5.33 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-10-01 08:35 | 6.52 m | 2026-10-01 13:45 | +5.2 | +2.4 | +4.3 | +5.0 | +5.2 |  |
-| 2026-10-08 00:55 | 5.73 m | 2026-10-07 20:25 | -4.5 | +3.8 | -2.3 | +2.3 | -0.6 |  |
-| 2026-10-16 09:10 | 4.42 m | 2026-10-16 13:20 | +4.2 | +6.1 | +2.7 | +7.0 | -1.5 |  |
-| 2026-10-26 00:10 | 3.65 m | 2026-10-25 21:15 | -2.9 | +12.3 | +5.1 | +1.0 | -5.0 |  |
-| 2026-11-05 00:05 | 8.25 m | 2026-11-05 01:45 | +1.7 | +1.9 | +2.1 | +3.7 | +2.0 |  |
+| 2026-09-01 05:35 | 7.06 m | 2026-09-01 05:30 | -0.1 | +0.1 | -0.5 | +0.5 | -1.5 |  |
+| 2026-09-08 11:50 | 4.78 m | 2026-09-08 13:55 | +2.1 | +1.9 | +1.7 | +1.8 | +1.8 |  |
+| 2026-09-12 00:25 | 6.05 m | 2026-09-11 23:40 | -0.8 | -0.7 | -1.4 | +0.2 | -2.3 |  |
+| 2026-09-20 13:25 | 5.45 m | 2026-09-20 14:50 | +1.4 | +1.2 | +1.0 | +1.5 | +1.2 |  |
+| 2026-09-22 09:15 | 6.48 m | 2026-09-22 10:00 | +0.8 | +0.6 | +0.6 | +0.8 | +0.8 |  |
+| 2026-09-29 22:15 | 5.33 m | 2026-10-01 08:00 | +33.8 | +4.5 | — | +0.5 | — |  |
+| 2026-10-01 08:35 | 6.52 m | 2026-10-01 08:00 | -0.6 | -28.5 | — | +0.2 | — |  |
+| 2026-10-08 00:55 | 5.73 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-10-16 09:10 | 4.42 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-10-26 00:10 | 3.65 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-11-05 00:05 | 8.25 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 
-Theil–Sen: -1.84 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
+Theil–Sen: -0.98 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
 
-### Ascurra (DCSC-00003) → Blumenau (PADKND + AlertaBlu)
+### Lontras (DCSC-00032) → Ascurra (DCSC-00003)
+
+| Crista em cima | Pico (zero da régua) | Crista embaixo | pico a pico | meia-subida | centro de massa | correlação | DTW | Obs. |
+|---|---|---|---|---|---|---|---|---|
+| 2026-09-01 05:30 | 5.81 m | 2026-09-01 05:40 | +0.2 | -0.4 | -1.9 | +0.1 | -1.2 |  |
+| 2026-09-08 13:55 | 4.12 m | 2026-09-08 19:10 | +5.2 | +4.5 | +3.3 | +4.2 | +0.8 |  |
+| 2026-09-11 23:40 | 5.22 m | 2026-09-12 00:05 | +0.4 | -2.0 | -1.4 | +0.2 | -0.3 |  |
+| 2026-09-20 14:50 | 4.60 m | 2026-09-20 18:05 | +3.2 | +2.4 | +1.4 | +2.5 | +2.7 |  |
+| 2026-09-22 10:00 | 5.28 m | 2026-09-22 07:40 | -2.3 | -1.2 | -2.6 | +0.3 | -4.2 |  |
+| 2026-10-01 08:00 | 5.26 m | 2026-10-01 13:45 | +5.8 | +30.9 | — | +3.7 | — |  |
+| 2026-11-06 16:55 | 6.06 m | 2026-11-07 19:10 | +26.2 | +17.0 | — | — | — | a crista de baixo está na ponta da série (pode não ter passado) |
+
+Theil–Sen: +4.55 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
+
+### Ibirama (DCSC-00020) → Ascurra (DCSC-00003)
+
+| Crista em cima | Pico (zero da régua) | Crista embaixo | pico a pico | meia-subida | centro de massa | correlação | DTW | Obs. |
+|---|---|---|---|---|---|---|---|---|
+| 2026-07-22 15:55 | 3.00 m | 2026-07-22 19:55 | +4.0 | +3.2 | +2.5 | +4.7 | +3.0 |  |
+| 2026-08-12 00:15 | 2.08 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-08-15 11:30 | 2.83 m | 2026-08-15 14:35 | +3.1 | +0.4 | +3.6 | — | +2.8 |  |
+| 2026-08-20 10:30 | 2.16 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-01 03:00 | 3.70 m | 2026-09-01 05:40 | +2.7 | +4.5 | +3.2 | +3.0 | +3.5 |  |
+| 2026-09-11 20:35 | 4.16 m | 2026-09-12 00:05 | +3.5 | +0.9 | +2.0 | +2.7 | +2.7 |  |
+| 2026-09-20 11:15 | 2.90 m | 2026-09-20 18:05 | +6.8 | +3.6 | +5.2 | — | +7.0 |  |
+| 2026-09-22 03:55 | 3.36 m | 2026-09-22 07:40 | +3.8 | +38.5 | +4.9 | +3.3 | +5.3 |  |
+| 2026-10-01 06:10 | 2.70 m | 2026-10-01 13:45 | +7.6 | +12.9 | +7.2 | — | +4.5 |  |
+| 2026-10-26 11:35 | 2.27 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-11-05 03:05 | 2.62 m | 2026-11-05 01:45 | -1.3 | +11.7 | -1.5 | — | +4.3 |  |
+
+Theil–Sen: -1.46 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
+
+### Ascurra (DCSC-00003) → Indaial (DCSC-00180)
 
 | Crista em cima | Pico (zero da régua) | Crista embaixo | pico a pico | meia-subida | centro de massa | correlação | DTW | Obs. |
 |---|---|---|---|---|---|---|---|---|
@@ -117,45 +173,49 @@ Theil–Sen: -1.84 h por metro de amplitude em cima (negativo = cheia maior desc
 | 2026-08-05 19:35 | 6.46 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-08-07 18:20 | 7.06 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-08-15 14:35 | 8.53 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-09-01 05:40 | 10.13 m | 2026-09-01 10:30 | +4.8 | — | +7.1 | — | — |  |
+| 2026-09-01 05:40 | 10.13 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-09-08 19:10 | 7.55 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-09-10 17:15 | 7.97 m | 2026-09-10 18:30 | +1.2 | +1.8 | +2.6 | +4.5 | +3.5 |  |
-| 2026-09-12 00:05 | 10.45 m | 2026-09-12 05:20 | +5.2 | +4.0 | — | +4.8 | +5.8 |  |
-| 2026-09-20 18:05 | 8.35 m | 2026-09-20 21:45 | +3.7 | +0.4 | +3.1 | +1.5 | +3.8 |  |
-| 2026-09-22 07:40 | 9.41 m | 2026-09-22 11:50 | +4.2 | +0.0 | +3.2 | +1.4 | +5.3 |  |
-| 2026-09-28 22:25 | 8.24 m | 2026-09-29 06:05 | +7.7 | +3.2 | +5.9 | +4.5 | +7.1 |  |
-| 2026-10-01 13:45 | 8.76 m | 2026-10-01 19:15 | +5.5 | +4.4 | +5.5 | +5.2 | +5.8 |  |
-| 2026-10-07 20:25 | 8.29 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-10-16 13:20 | 7.61 m | 2026-10-16 20:10 | +6.8 | +5.0 | +6.5 | +5.5 | +7.7 |  |
-| 2026-10-25 21:15 | 7.17 m | 2026-10-26 05:05 | +7.8 | -10.2 | +0.1 | +6.8 | +1.5 |  |
+| 2026-09-10 17:15 | 7.97 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-12 00:05 | 10.45 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-20 18:05 | 8.35 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-22 07:40 | 9.41 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-28 22:25 | 8.24 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-10-01 13:45 | 8.76 m | 2026-10-01 15:10 | +1.4 | +1.7 | +1.9 | +1.8 | +2.0 |  |
+| 2026-10-07 20:25 | 8.29 m | 2026-10-07 08:50 | -11.6 | -5.7 | -13.1 | -7.8 | — |  |
+| 2026-10-16 13:20 | 7.61 m | 2026-10-16 16:35 | +3.2 | +1.7 | +1.7 | +1.7 | +2.5 |  |
+| 2026-10-25 21:15 | 7.17 m | 2026-10-26 00:00 | +2.8 | -12.9 | -0.6 | +2.8 | +1.8 |  |
 | 2026-10-31 21:25 | 6.60 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-11-01 22:05 | 6.62 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-11-05 01:45 | 9.46 m | 2026-11-05 21:30 | +19.8 | — | +20.2 | — | — |  |
+| 2026-11-05 01:45 | 9.46 m | 2026-11-05 04:40 | +2.9 | -0.6 | +1.5 | +2.2 | +2.2 |  |
 
-Theil–Sen: +0.77 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
+Theil–Sen: +11.31 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
 
-### Rio do Sul (DCSC-00013) → Blumenau (PADKND + AlertaBlu)
+### Timbó (DCSC-00023) → Indaial (DCSC-00180)
 
 | Crista em cima | Pico (zero da régua) | Crista embaixo | pico a pico | meia-subida | centro de massa | correlação | DTW | Obs. |
 |---|---|---|---|---|---|---|---|---|
-| 2026-07-22 15:40 | 5.76 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-07-30 07:30 | 4.43 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-08-13 06:00 | 4.66 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-08-15 12:30 | 5.51 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-08-29 23:35 | 3.83 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-09-01 05:35 | 7.06 m | 2026-09-01 10:30 | +4.9 | — | +4.7 | — | — |  |
-| 2026-09-08 11:50 | 4.78 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-09-12 00:25 | 6.05 m | 2026-09-12 05:20 | +4.9 | +1.3 | — | +4.2 | +3.5 |  |
-| 2026-09-20 13:25 | 5.45 m | 2026-09-20 21:45 | +8.3 | +4.0 | +5.5 | +3.8 | +6.8 |  |
-| 2026-09-22 09:15 | 6.48 m | 2026-09-22 11:50 | +2.6 | -0.6 | +1.2 | +1.5 | +2.2 |  |
-| 2026-09-29 22:15 | 5.33 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-10-01 08:35 | 6.52 m | 2026-10-01 19:15 | +10.7 | +6.9 | +9.8 | +8.8 | +11.2 |  |
-| 2026-10-08 00:55 | 5.73 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-10-16 09:10 | 4.42 m | 2026-10-16 20:10 | +11.0 | +11.1 | +9.2 | +12.7 | +6.0 |  |
-| 2026-10-26 00:10 | 3.65 m | 2026-10-26 05:05 | +4.9 | +2.1 | +5.2 | — | +7.8 |  |
-| 2026-11-05 00:05 | 8.25 m | 2026-11-05 21:30 | +21.4 | — | +22.3 | — | — |  |
+| 2026-08-15 11:30 | 3.87 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-01 04:50 | 5.76 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-10 12:55 | 3.96 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-12 02:40 | 5.52 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-20 14:45 | 2.91 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-09-22 07:40 | 5.47 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-10-07 04:55 | 4.79 m | 2026-10-07 08:50 | +3.9 | +4.0 | +7.8 | +3.3 | +5.7 |  |
+| 2026-10-13 09:40 | 2.61 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-10-16 09:20 | 2.36 m | 2026-10-16 16:35 | +7.2 | +4.3 | +5.5 | +5.1 | +8.5 |  |
+| 2026-10-25 00:00 | 2.78 m | 2026-10-26 00:00 | +24.0 | +6.8 | +31.5 | +1.8 | +24.7 |  |
+| 2026-11-02 15:45 | 1.93 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
+| 2026-11-05 05:45 | 3.22 m | 2026-11-05 04:40 | -1.1 | +8.0 | +5.0 | +5.0 | -0.2 |  |
 
-Theil–Sen: +5.06 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
+### Indaial (DCSC-00180) → Blumenau (PADKND + AlertaBlu)
+
+| Crista em cima | Pico (zero da régua) | Crista embaixo | pico a pico | meia-subida | centro de massa | correlação | DTW | Obs. |
+|---|---|---|---|---|---|---|---|---|
+| 2026-10-01 15:10 | 55.71 m | 2026-10-01 19:15 | +4.1 | +2.7 | +3.6 | +2.9 | +3.8 |  |
+| 2026-10-07 08:50 | 55.84 m | 2026-10-07 07:55 | -0.9 | -0.1 | — | -0.3 | -1.8 |  |
+| 2026-10-16 16:35 | 55.01 m | 2026-10-16 20:10 | +3.6 | +3.2 | +4.8 | +3.7 | +5.3 |  |
+| 2026-10-26 00:00 | 54.72 m | 2026-10-26 05:05 | +5.1 | +2.6 | +0.7 | +4.7 | +3.6 |  |
+| 2026-11-05 04:40 | 56.34 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 
 ### Blumenau (PADKND + AlertaBlu) → Ilhota (DCSC-00030)
 
@@ -171,11 +231,10 @@ Theil–Sen: +5.06 h por metro de amplitude em cima (negativo = cheia maior desc
 | 2026-10-07 07:55 | 5.04 m | 2026-10-07 08:35 | +0.7 | +4.4 | — | +2.5 | -5.3 |  |
 | 2026-10-16 20:10 | 3.18 m | 2026-10-17 23:50 | +27.7 | +0.0 | +21.3 | — | +1.0 |  |
 | 2026-10-26 05:05 | 2.92 m | 2026-10-26 05:05 | +0.0 | +24.3 | -5.3 | — | -1.4 |  |
-| 2026-11-05 21:30 | 4.91 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 
 Theil–Sen: -0.18 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
 
-### Ilhota (DCSC-00030) → Itajaí DC-11 Volta de Cima
+### Ilhota (DCSC-00030) → Itajaí DC-11 Santa Regina (Volta de Cima)
 
 | Crista em cima | Pico (zero da régua) | Crista embaixo | pico a pico | meia-subida | centro de massa | correlação | DTW | Obs. |
 |---|---|---|---|---|---|---|---|---|
@@ -197,8 +256,8 @@ Theil–Sen: -0.18 h por metro de amplitude em cima (negativo = cheia maior desc
 | 2026-08-29 16:55 | 9.39 m | 2026-08-30 16:10 | +23.2 | — | +24.6 | — | — |  |
 | 2026-09-01 11:10 | 11.61 m | 2026-09-01 10:40 | -0.5 | -0.6 | +0.4 | -0.4 | +0.3 |  |
 | 2026-09-06 19:05 | 9.76 m | 2026-09-06 17:20 | -1.8 | -0.5 | +1.4 | -0.5 | -0.5 |  |
-| 2026-09-10 22:20 | 9.98 m | 2026-09-12 08:20 | +34.0 | +31.4 | — | -0.5 | +17.2 |  |
-| 2026-09-12 08:55 | 11.83 m | 2026-09-12 08:20 | -0.6 | +0.2 | — | -0.5 | +1.8 |  |
+| 2026-09-10 22:20 | 9.98 m | 2026-09-10 17:45 | -4.6 | +0.1 | -1.2 | -0.5 | -0.8 |  |
+| 2026-09-12 08:55 | 11.83 m | 2026-09-13 18:35 | +33.7 | +42.7 | +33.0 | -0.5 | +9.6 |  |
 | 2026-09-21 02:35 | 9.80 m | 2026-09-21 02:50 | +0.2 | -6.5 | +0.5 | -0.5 | -0.5 |  |
 | 2026-09-22 19:05 | 11.06 m | 2026-09-22 17:30 | -1.6 | +0.2 | +1.2 | -0.5 | -0.5 |  |
 | 2026-09-28 03:30 | 9.66 m | 2026-09-28 03:00 | -0.5 | -4.6 | -0.2 | -0.4 | -0.7 |  |
@@ -216,18 +275,17 @@ Theil–Sen: -0.18 h por metro de amplitude em cima (negativo = cheia maior desc
 | 2026-10-30 05:50 | 9.53 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-10-31 13:05 | 9.47 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-11-01 13:55 | 9.28 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-11-03 10:30 | 9.50 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-11-05 08:20 | 11.02 m | 2026-11-05 21:40 | +13.3 | — | +13.7 | — | — |  |
+| 2026-11-05 08:20 | 11.02 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 
-Theil–Sen: -1.31 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
+Theil–Sen: -1.02 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
 
-### Blumenau (PADKND + AlertaBlu) → Itajaí DC-11 Volta de Cima
+### Blumenau (PADKND + AlertaBlu) → Itajaí DC-11 Santa Regina (Volta de Cima)
 
 | Crista em cima | Pico (zero da régua) | Crista embaixo | pico a pico | meia-subida | centro de massa | correlação | DTW | Obs. |
 |---|---|---|---|---|---|---|---|---|
 | 2026-09-01 10:30 | 7.57 m | 2026-09-01 10:40 | +0.2 | — | -1.7 | — | — |  |
 | 2026-09-10 18:30 | 4.26 m | 2026-09-10 17:45 | -0.8 | +2.6 | +0.1 | — | -0.2 |  |
-| 2026-09-12 05:20 | 7.86 m | 2026-09-12 08:20 | +3.0 | +2.2 | — | — | +3.8 |  |
+| 2026-09-12 05:20 | 7.86 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-09-20 21:45 | 4.29 m | 2026-09-21 02:50 | +5.1 | -3.5 | +3.2 | — | +3.8 |  |
 | 2026-09-22 11:50 | 6.62 m | 2026-09-22 17:30 | +5.7 | +1.2 | +6.1 | — | +7.2 |  |
 | 2026-09-29 06:05 | 3.87 m | 2026-09-29 03:50 | -2.2 | -6.2 | +0.3 | — | -5.1 |  |
@@ -235,9 +293,8 @@ Theil–Sen: -1.31 h por metro de amplitude em cima (negativo = cheia maior desc
 | 2026-10-07 07:55 | 5.04 m | 2026-10-07 08:15 | +0.3 | +5.2 | — | +3.7 | -6.8 |  |
 | 2026-10-16 20:10 | 3.18 m | 2026-10-17 06:55 | +10.8 | +7.7 | +3.9 | — | +3.3 |  |
 | 2026-10-26 05:05 | 2.92 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-11-05 21:30 | 4.91 m | 2026-11-05 21:40 | +0.2 | — | -1.6 | — | — |  |
 
-Theil–Sen: +0.27 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
+Theil–Sen: +0.10 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
 
 ### Blumenau (PADKND + AlertaBlu) → Itajaí DC-02 Praça Celso Pereira
 
@@ -253,7 +310,6 @@ Theil–Sen: +0.27 h por metro de amplitude em cima (negativo = cheia maior desc
 | 2026-10-07 07:55 | 5.04 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-10-16 20:10 | 3.18 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 | 2026-10-26 05:05 | 2.92 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
-| 2026-11-05 21:30 | 4.91 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 
 ### Vidal Ramos (DCSC-00024) → Botuverá (DCSC-00018)
 
@@ -323,9 +379,9 @@ Theil–Sen: +0.00 h por metro de amplitude em cima (negativo = cheia maior desc
 | 2026-10-06 22:25 | 2.45 m | 2026-10-07 00:55 | +2.5 | -0.8 | — | +0.2 | -0.2 |  |
 | 2026-10-16 20:25 | 2.87 m | 2026-10-16 22:55 | +2.5 | +2.1 | +2.3 | +1.5 | +2.3 |  |
 | 2026-10-26 02:25 | 1.98 m | 2026-10-25 20:15 | -6.2 | +2.3 | +1.5 | +0.5 | -0.9 |  |
-| 2026-11-05 01:00 | 6.88 m | 2026-11-05 21:40 | +20.7 | — | +24.3 | — | — |  |
+| 2026-11-05 01:00 | 6.88 m | — | — | — | — | — | — | sem cheia correspondente lá embaixo na janela de −12 a +36 h |
 
-Theil–Sen: +0.50 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
+Theil–Sen: +0.07 h por metro de amplitude em cima (negativo = cheia maior desce mais rápido, como a JICA prevê).
 
 ## Como ler
 
@@ -334,3 +390,7 @@ Theil–Sen: +0.50 h por metro de amplitude em cima (negativo = cheia maior desc
 - Cristas quase simultâneas (|atraso| ≤ 1 h) dizem que o baixo vale subiu com a mesma chuva, não que a água chegou em uma hora.
 - **Blumenau → Ilhota e → Itajaí:** a crista lá embaixo vem cedo (1 a 4 h) porque o baixo vale cresta com a chuva local, o Luiz Alves e o represamento da maré (`docs/ANALISE-CHEGADA-ITAJAI-2026.md`). Esse número é a hora da crista local, **não** a chegada da água de Blumenau; a JICA (12–17 h até Itajaí) continua sendo a referência para a onda que desce. Nenhuma das cheias de 2026 foi grande.
 - Confiança `alta`: ≥ 5 cheias, p25–p75 ≤ 3 h e métodos a ≤ 2 h; `media`: ≥ 3, ≤ 6 h e ≤ 4 h.
+- A JICA é um hidrograma CALCULADO para chuva de projeto espalhada na bacia e cheia de 5 a 50 anos; as cheias de 2026 foram menores e com chuva desigual. Diferença não quer dizer que a tabela está errada.
+- Taió, Ituporanga e Ibirama ficam abaixo das barragens Oeste, Sul e Norte: a barragem segura e solta a água, e a hora do pico depende da operação das comportas, não só da chuva.
+- Indaial (DCSC-00180) publica cota em altitude desde 26/09/2026; só o trecho depois da troca entra, e só para horário. Gaspar (estação 21) é atualizada à mão e ficou de fora; Apiúna não tem régua.
+- Itajaí é a DC-11 (Santa Regina, Volta de Cima), a régua de Itajaí onde a maré sobe menos, com a maré tirada por análise harmônica.

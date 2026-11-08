@@ -44,9 +44,15 @@ A CONFIANÇA, pela mesma régua do `calibrar_transito_telemetria.py`:
   * `media` — ≥ 3 eventos, p25–p75 em até 6 h e os métodos a ≤ 4 h;
   * fora disso, `insuficiente`, com o motivo. Um trânsito inventado é pior que um trânsito ausente.
 
+A COMPARAÇÃO COM A JICA (o objetivo, 08/11/2026). Cada ponto da Tabela 7.5.1 é medido a partir do pico de
+Rio do Sul, como a tabela conta, régua por régua até Santa Regina (DC-11, onde a maré sobe menos). O
+veredito compara o IC90 da mediana medida com a faixa das colunas ± 1 h: "bate", "mais rápido", "mais lento"
+ou "inconclusivo" (quando a confiança não chega a `media`). Sem régua (Apiúna) ou sem série contínua (Gaspar,
+manual), o ponto sai "não medido", com o motivo.
+
 Uso:
-    python3 scripts/medir_descida.py --dcsc <pasta dos CSV> --serie <pasta dos ndjson> \\
-        [--recente serie-recente.json] [--agora] [--gravar]
+    python3 scripts/medir_descida.py --dcsc <pasta dos CSV> --dcsc-bruto <pastas cruas> \\
+        --serie <pasta dos ndjson> [--recente serie-recente.json] [--agora] [--gravar]
 """
 from __future__ import annotations
 
@@ -108,23 +114,42 @@ class Ponto:
 
 
 PONTOS: dict[str, Ponto] = {p.id: p for p in (
+    # Itajaí do Oeste e do Sul (cabeceiras) e afluentes da margem esquerda
     Ponto("taio", "Taió (DCSC-00041)", ("dcsc", "DCSC-00041")),
     Ponto("ituporanga", "Ituporanga (DCSC-00039)", ("dcsc", "DCSC-00039"),
           nota="a jusante da Barragem Sul: água amortecida"),
+    # Tronco do Itajaí-Açu, de cima para baixo, até Santa Regina (DC-11), onde a maré sobe menos
     Ponto("rio-do-sul", "Rio do Sul (DCSC-00013)", ("dcsc", "DCSC-00013"),
           nota="estação estadual: série contínua; a Asthon da Ponte Dom Tito Buss ficou parada de 04 a 07/11"),
-    Ponto("ascurra", "Ascurra (DCSC-00003)", ("dcsc", "DCSC-00003")),
+    Ponto("lontras", "Lontras (DCSC-00032)", ("dcsc", "DCSC-00032"),
+          nota="publicou o valor-sentinela 21474836 m em 07/11; leituras fora da faixa saem"),
+    Ponto("ibirama", "Ibirama (DCSC-00020)", ("dcsc", "DCSC-00020"),
+          nota="Rio Hercílio (Itajaí do Norte), afluente: entra no tronco entre Lontras e Apiúna"),
+    Ponto("apiuna", "Apiúna", ("nenhuma", None),
+          nota="sem régua ao vivo: só a referência cadastral da ANA 83500000 (estacoes.json)"),
+    Ponto("ascurra", "Ascurra (DCSC-00003)", ("dcsc", "DCSC-00003"),
+          nota="primeira régua do tronco abaixo da foz do Hercílio (Apiúna não tem régua ao vivo)"),
+    Ponto("timbo", "Timbó (DCSC-00023)", ("dcsc", "DCSC-00023"),
+          nota="Rio Benedito, afluente: entra no tronco em Indaial"),
+    Ponto("indaial", "Indaial (DCSC-00180)", ("dcsc_bruto", "DCSC-00180"),
+          nota="cota em ALTITUDE desde 26/09/2026 21:40 (antes, outro zero): serve só para horário, e só depois "
+               "da troca; a DCSC-00006 ficou vazia"),
     Ponto("blumenau", "Blumenau (PADKND + AlertaBlu)",
           ("coletor", ["Blumenau (PADKND)", "Blumenau (AlertaBlu)"]),
           nota="o repasse antigo 'Blumenau', 3 h atrasado, fica de fora"),
+    Ponto("gaspar", "Gaspar (estação 21 municipal)",
+          ("coletor", ["Gaspar — Rio Itajaí-Açu (Defesa Civil de Gaspar)"]),
+          nota="atualização manual, horas ou dias entre leituras, parada desde 13/10: sem série contínua"),
     Ponto("ilhota", "Ilhota (DCSC-00030)", ("dcsc", "DCSC-00030"), prominencia_m=0.3, mare=True,
           nota="estação estadual; zero próprio; a maré chega a Ilhota em ~1 h (docs/ANALISE-CHEGADA-ITAJAI-2026.md)"),
-    Ponto("itajai-dc11", "Itajaí DC-11 Volta de Cima",
+    Ponto("itajai-dc11", "Itajaí DC-11 Santa Regina (Volta de Cima)",
           ("coletor", ["DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)"]),
-          prominencia_m=0.2, mare=True, nota="estuário: maré tirada pelo filtro de Godin"),
+          prominencia_m=0.2, mare=True,
+          nota="a régua de Itajaí onde a maré sobe menos; maré tirada por análise harmônica"),
     Ponto("itajai-dc02", "Itajaí DC-02 Praça Celso Pereira",
           ("coletor", ["DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva"]),
-          prominencia_m=0.15, mare=True, nota="estuário: maré tirada pelo filtro de Godin"),
+          prominencia_m=0.15, mare=True, nota="estuário: maré tirada por análise harmônica"),
+    # Itajaí-Mirim
     Ponto("vidal-ramos", "Vidal Ramos (DCSC-00024)", ("dcsc", "DCSC-00024")),
     Ponto("botuvera", "Botuverá (DCSC-00018)", ("dcsc", "DCSC-00018")),
     Ponto("brusque", "Brusque (DCSC-00019)", ("dcsc", "DCSC-00019")),
@@ -133,18 +158,26 @@ PONTOS: dict[str, Ponto] = {p.id: p for p in (
           nota="acima da maré (CLAUDE.md, DC-10)"),
 )}
 
-#: Coluna da Tabela 7.5.1 da JICA, horas depois de Rio do Sul, para 5 / 10 / 25 / 50 anos.
-#: Só os pontos que a tabela traz; a diferença entre dois deles vale dentro de uma coluna.
+#: Tabela 7.5.1 da JICA (Vol. III-A, p. A-80; `docs/JICA-2011-VERIFICADO.md`): horas depois do pico de Rio do Sul,
+#: para as cheias de projeto de 5 / 10 / 25 / 50 anos. As cabeceiras e Brusque só têm a coluna de 5 anos no doc.
+#: A diferença entre dois pontos vale dentro de uma coluna. Itajaí é o ponto da tabela; aqui, a DC-11.
 JICA_APOS_RIO_DO_SUL = {
-    "taio": (-6, None, None, None), "ituporanga": (1, None, None, None), "rio-do-sul": (0, 0, 0, 0),
-    "blumenau": (10, 9, 7, 7), "ilhota": (17, 15, 14, 12), "itajai": (27, 24, 21, 19),
+    "taio": (-6, None, None, None), "ibirama": (-5, None, None, None), "rio-do-sul": (0, 0, 0, 0),
+    "timbo": (0, None, None, None), "ituporanga": (1, None, None, None), "brusque": (6, None, None, None),
+    "apiuna": (9, None, None, None), "indaial": (10, 9, 8, 8), "blumenau": (10, 9, 7, 7),
+    "gaspar": (12, 11, 9, 8), "ilhota": (17, 15, 14, 12), "itajai": (27, 24, 21, 19),
 }
+#: Ponto do medidor que representa cada ponto da tabela.
+PONTO_DA_JICA = {"itajai": "itajai-dc11"}
+
+
+def _chave_jica(p: str) -> str:
+    return next((k for k, v in PONTO_DA_JICA.items() if v == p), p)
 
 
 def referencia_jica(de: str, para: str) -> tuple[float, float] | None:
     """Faixa da JICA para o trecho, coluna a coluna; None quando a tabela não traz as duas pontas."""
-    chave = lambda p: "itajai" if p.startswith("itajai-") and p in ("itajai-dc11", "itajai-dc02") else p  # noqa: E731
-    a, b = JICA_APOS_RIO_DO_SUL.get(chave(de)), JICA_APOS_RIO_DO_SUL.get(chave(para))
+    a, b = JICA_APOS_RIO_DO_SUL.get(_chave_jica(de)), JICA_APOS_RIO_DO_SUL.get(_chave_jica(para))
     if not a or not b:
         return None
     difs = [y - x for x, y in zip(a, b) if x is not None and y is not None]
@@ -158,12 +191,17 @@ class Trecho:
     rio: str
 
 
+#: Régua por régua, de cima para baixo. Os afluentes entram na primeira régua do tronco abaixo da foz deles.
 TRECHOS: tuple[Trecho, ...] = (
     Trecho("taio", "rio-do-sul", "itajai-acu"),
     Trecho("ituporanga", "rio-do-sul", "itajai-acu"),
-    Trecho("rio-do-sul", "ascurra", "itajai-acu"),
-    Trecho("ascurra", "blumenau", "itajai-acu"),
-    Trecho("rio-do-sul", "blumenau", "itajai-acu"),
+    Trecho("rio-do-sul", "lontras", "itajai-acu"),
+    Trecho("lontras", "ascurra", "itajai-acu"),
+    Trecho("ibirama", "ascurra", "itajai-acu"),
+    Trecho("ascurra", "indaial", "itajai-acu"),
+    Trecho("timbo", "indaial", "itajai-acu"),
+    Trecho("indaial", "blumenau", "itajai-acu"),
+    Trecho("blumenau", "gaspar", "itajai-acu"),
     Trecho("blumenau", "ilhota", "itajai-acu"),
     Trecho("ilhota", "itajai-dc11", "itajai-acu"),
     Trecho("blumenau", "itajai-dc11", "itajai-acu"),
@@ -172,6 +210,14 @@ TRECHOS: tuple[Trecho, ...] = (
     Trecho("botuvera", "brusque", "itajai-mirim"),
     Trecho("brusque", "itajai-dc10", "itajai-mirim"),
 )
+
+#: A comparação com a JICA: cada ponto da tabela medido a partir de Rio do Sul, como a tabela conta.
+COMPARACAO_JICA: tuple[Trecho, ...] = tuple(
+    Trecho("rio-do-sul", PONTO_DA_JICA.get(k, k), "itajai-mirim" if k == "brusque" else "itajai-acu")
+    for k in JICA_APOS_RIO_DO_SUL if k != "rio-do-sul"
+)
+#: Tolerância da comparação: a tabela é em horas cheias.
+TOLERANCIA_JICA_H = 1.0
 
 
 # --------------------------------------------------------------------------- séries
@@ -205,6 +251,40 @@ def ler_dcsc(pasta: Path, codigo: str) -> Serie:
             if nivel_plausivel(n):
                 out.append((q, n))
     return sorted(out)
+
+
+#: Salto entre duas leituras seguidas maior que isto é troca de referência (zero → altitude), não rio.
+SALTO_DE_REFERENCIA_M = 5.0
+
+
+def ler_dcsc_bruto(pastas: list[Path], codigo: str) -> Serie:
+    """Resposta crua do `historic` (`baixar_historico_dcsc.py`), para estação que o consolidador descarta.
+
+    É o caso de Indaial (DCSC-00180): publica a cota em ALTITUDE (~55 m), que passa da régua de plausibilidade
+    de 30 m — mas o HORÁRIO do pico vale em qualquer referência. Só o trecho depois da ÚLTIMA troca de
+    referência entra (salto > SALTO_DE_REFERENCIA_M), para dois zeros nunca se misturarem; o valor-sentinela
+    (estouro de inteiro, ~2,1 × 10⁷) e negativos saem.
+    """
+    pontos: dict[datetime, float] = {}
+    for pasta in pastas:
+        for arquivo in sorted((pasta / codigo).glob("*.json*")) if (pasta / codigo).exists() else []:
+            abrir = gzip.open if arquivo.suffix == ".gz" else open
+            try:
+                with abrir(arquivo, "rt", encoding="utf-8") as f:
+                    itens = json.load(f)["resposta"]["data"]["historic"]["items"]
+            except (OSError, ValueError, KeyError, TypeError):
+                continue
+            for it in itens:
+                v, q = it.get("rio_nivel"), _quando(str(it.get("ts", ""))[:19])
+                if q is None or not isinstance(v, (int, float)) or isinstance(v, bool) or not 0 < v < 1000:
+                    continue
+                pontos[q] = float(v)
+    serie = sorted(pontos.items())
+    corte = 0
+    for k in range(1, len(serie)):
+        if abs(serie[k][1] - serie[k - 1][1]) > SALTO_DE_REFERENCIA_M:
+            corte = k
+    return serie[corte:]
 
 
 def ler_coletor(arquivos: list[Path]) -> dict[str, Serie]:
@@ -501,8 +581,9 @@ def achar_eventos(g: Grade, prominencia_min: float) -> list[Evento]:
         x = v[i]
         if x is None:
             continue
-        esq = next((v[j] for j in range(i - 1, -1, -1) if v[j] is not None), None)
-        dir_ = next((v[j] for j in range(i + 1, n) if v[j] is not None), None)
+        # vizinhos só dentro de 1 h: do outro lado de um buraco não há vizinho, há outra série
+        esq = next((v[j] for j in range(i - 1, max(-1, i - 7), -1) if v[j] is not None), None)
+        dir_ = next((v[j] for j in range(i + 1, min(n, i + 7)) if v[j] is not None), None)
         if esq is None or esq > x or (dir_ is not None and dir_ > x):
             continue
         # proeminência: a base é o MAIOR dos dois vales até um ponto mais alto (ou até LOOKBACK)
@@ -817,12 +898,22 @@ def resumir(pares: list[Par]) -> dict:
 
 # --------------------------------------------------------------------------- montagem
 
-def montar_grades(dcsc: Path | None, coletor: dict[str, Serie]) -> tuple[dict[str, Grade], dict[str, str]]:
+#: Fração mínima da grade com leitura para a série contar (Gaspar, manual, fica abaixo).
+COBERTURA_MIN = 0.5
+
+
+def montar_grades(dcsc: Path | None, coletor: dict[str, Serie],
+                  brutos: list[Path] | None = None) -> tuple[dict[str, Grade], dict[str, str]]:
     grades: dict[str, Grade] = {}
     faltas: dict[str, str] = {}
     for p in PONTOS.values():
         tipo, chave = p.fonte
-        if tipo == "dcsc":
+        if tipo == "nenhuma":
+            faltas[p.id] = p.nota
+            continue
+        if tipo == "dcsc_bruto":
+            serie = ler_dcsc_bruto(brutos or [], chave)
+        elif tipo == "dcsc":
             serie = ler_dcsc(dcsc, chave) if dcsc else []
             # a série do coletor da mesma estação completa a ponta mais nova (o consolidado pode ser de ontem)
             extra = [s for t, s in coletor.items() if chave in t]
@@ -834,36 +925,68 @@ def montar_grades(dcsc: Path | None, coletor: dict[str, Serie]) -> tuple[dict[st
         if g is None:
             faltas[p.id] = "sem série"
             continue
+        cobertura = sum(x is not None for x in g.v) / len(g.v)
+        if cobertura < COBERTURA_MIN:
+            faltas[p.id] = (f"sem série contínua ({len(serie)} leituras, {cobertura:.0%} da grade de 10 min); "
+                            f"{p.nota}".rstrip("; "))
+            continue
         grades[p.id] = tirar_mare(g) if p.mare else g
     return grades, faltas
 
 
+def medir_trecho(t: Trecho, grades: dict[str, Grade], faltas: dict[str, str]) -> dict:
+    up, dn = PONTOS[t.de], PONTOS[t.para]
+    item = {"rio": t.rio, "de": t.de, "para": t.para, "de_nome": up.nome, "para_nome": dn.nome,
+            "jica_h": referencia_jica(t.de, t.para)}
+    if t.de not in grades or t.para not in grades:
+        item["sem_medida"] = "; ".join(f"{PONTOS[x].nome}: {faltas.get(x, 'sem série')}" for x in (t.de, t.para)
+                                       if x not in grades)
+        return item
+    g_up, g_dn = grades[t.de], grades[t.para]
+    ev_up = [e for e in achar_eventos(g_up, up.prominencia_m) if not e.aberto]
+    ev_dn = achar_eventos(g_dn, dn.prominencia_m)
+    pares = [medir_par(g_up, g_dn, e, ev_dn) for e in ev_up]
+    item["eventos"] = [{
+        "crista_montante": p.crista_montante.isoformat(timespec="minutes"),
+        "pico_montante_m": round(p.pico_montante, 2),
+        "amplitude_montante_m": round(p.amplitude_montante, 2),
+        "crista_jusante": p.crista_jusante.isoformat(timespec="minutes") if p.crista_jusante else None,
+        "lags_h": {m: (round(v, 1) if v is not None else None) for m, v in p.lags.items()},
+        **({"obs": p.obs} if p.obs else {}),
+    } for p in pares]
+    item["resumo"] = resumir(pares)
+    return item
+
+
+def veredito_jica(item: dict) -> dict:
+    """Bate com a JICA? Compara o IC90 da mediana medida (pico a pico) com a faixa da tabela ± 1 h."""
+    jica = item.get("jica_h")
+    r = item.get("resumo") or {}
+    cr = (r.get("metodos") or {}).get("crista") or {}
+    if not jica:
+        return {"veredito": "sem referência"}
+    if "resumo" not in item:
+        return {"veredito": "não medido", "motivo": item.get("sem_medida")}
+    if r.get("confianca") not in ("alta", "media") or not cr.get("ic90_mediana_h"):
+        return {"veredito": "inconclusivo", "motivo": r.get("por_que_nao") or "sem intervalo de confiança"}
+    lo, hi = cr["ic90_mediana_h"]
+    a, b = jica[0] - TOLERANCIA_JICA_H, jica[1] + TOLERANCIA_JICA_H
+    if hi < a:
+        return {"veredito": "mais rápido que a JICA", "diferenca_h": round(cr["mediana_h"] - jica[0], 1)}
+    if lo > b:
+        return {"veredito": "mais lento que a JICA", "diferenca_h": round(cr["mediana_h"] - jica[1], 1)}
+    return {"veredito": "bate com a JICA"}
+
+
 def medir(grades: dict[str, Grade], faltas: dict[str, str]) -> dict:
-    trechos = []
-    for t in TRECHOS:
-        up, dn = PONTOS[t.de], PONTOS[t.para]
-        item = {"rio": t.rio, "de": t.de, "para": t.para, "de_nome": up.nome, "para_nome": dn.nome,
-                "jica_h": referencia_jica(t.de, t.para)}
-        if t.de not in grades or t.para not in grades:
-            item["sem_medida"] = "; ".join(f"{x}: {faltas.get(x, 'sem série')}" for x in (t.de, t.para)
-                                           if x not in grades)
-            trechos.append(item)
-            continue
-        g_up, g_dn = grades[t.de], grades[t.para]
-        ev_up = [e for e in achar_eventos(g_up, up.prominencia_m) if not e.aberto]
-        ev_dn = achar_eventos(g_dn, dn.prominencia_m)
-        pares = [medir_par(g_up, g_dn, e, ev_dn) for e in ev_up]
-        item["eventos"] = [{
-            "crista_montante": p.crista_montante.isoformat(timespec="minutes"),
-            "pico_montante_m": round(p.pico_montante, 2),
-            "amplitude_montante_m": round(p.amplitude_montante, 2),
-            "crista_jusante": p.crista_jusante.isoformat(timespec="minutes") if p.crista_jusante else None,
-            "lags_h": {m: (round(v, 1) if v is not None else None) for m, v in p.lags.items()},
-            **({"obs": p.obs} if p.obs else {}),
-        } for p in pares]
-        item["resumo"] = resumir(pares)
-        trechos.append(item)
-    return {"trechos": trechos}
+    trechos = [medir_trecho(t, grades, faltas) for t in TRECHOS]
+    comparacao = []
+    for t in COMPARACAO_JICA:
+        item = medir_trecho(t, grades, faltas)
+        item.update(veredito_jica(item))
+        item["jica_colunas_h"] = JICA_APOS_RIO_DO_SUL[_chave_jica(t.para)]
+        comparacao.append(item)
+    return {"comparacao_jica": comparacao, "trechos": trechos}
 
 
 def agora(grades: dict[str, Grade], resultado: dict) -> list[str]:
@@ -905,6 +1028,21 @@ NOMES_METODO = {"crista": "pico a pico", "meia_subida": "meia-subida", "centroid
                 "xcorr": "correlação", "dtw": "DTW"}
 
 
+def _linha_jica(c: dict) -> str:
+    colunas = " / ".join("—" if x is None else f"{x:+d}" for x in c.get("jica_colunas_h", ()))
+    cr = ((c.get("resumo") or {}).get("metodos") or {}).get("crista") or {}
+    if cr.get("n"):
+        medido = f"{cr['mediana_h']:+.1f} h ({cr['p25_h']:+.1f} a {cr['p75_h']:+.1f})"
+        ic = f"{cr['ic90_mediana_h'][0]:+.1f} a {cr['ic90_mediana_h'][1]:+.1f}" if cr.get("ic90_mediana_h") else "—"
+        n = str(cr["n"])
+    else:
+        medido, ic, n = "—", "—", "0"
+    ver = c.get("veredito", "")
+    if c.get("motivo"):
+        ver += f": {c['motivo']}"
+    return f"| {c['para_nome']} | {colunas} | {medido} | {ic} | {n} | {ver} |"
+
+
 def _faixa_h(f) -> str:
     return f"{f[0]:g} h" if f[0] == f[1] else f"{f[0]:g}–{f[1]:g} h"
 
@@ -920,6 +1058,18 @@ def relatorio_md(resultado: dict) -> str:
         "",
         "Atraso em horas a partir da crista de cima; negativo = lá embaixo cresta ANTES (chuva local, maré, "
         "afluente). Faixa = p25–p75 dos eventos; IC90 = intervalo de confiança de 90 % da mediana (bootstrap).",
+        "",
+        "## Comparação com a JICA",
+        "",
+        "Cada régua medida a partir do pico de Rio do Sul, como a Tabela 7.5.1 conta (colunas de 5 / 10 / 25 / 50 "
+        "anos; as cabeceiras e Brusque só têm a de 5 anos). Veredito: o intervalo de confiança de 90 % da mediana "
+        f"medida (pico a pico) contra a faixa da tabela ± {TOLERANCIA_JICA_H:g} h.",
+        "",
+        "| Ponto | JICA 5 / 10 / 25 / 50 anos | Medido (mediana, p25–p75) | IC90 | Cheias | Veredito |",
+        "|---|---|---|---|---|---|",
+        *[_linha_jica(c) for c in resultado.get("comparacao_jica", [])],
+        "",
+        "## Régua por régua",
         "",
         "| Trecho | Eventos | Pico a pico | Meia-subida | Centro de massa | Correlação | DTW | JICA | Confiança |",
         "|---|---|---|---|---|---|---|---|---|",
@@ -971,6 +1121,14 @@ def relatorio_md(resultado: dict) -> str:
             "Esse número é a hora da crista local, **não** a chegada da água de Blumenau; a JICA (12–17 h até "
             "Itajaí) continua sendo a referência para a onda que desce. Nenhuma das cheias de 2026 foi grande.",
             "- Confiança `alta`: ≥ 5 cheias, p25–p75 ≤ 3 h e métodos a ≤ 2 h; `media`: ≥ 3, ≤ 6 h e ≤ 4 h.",
+            "- A JICA é um hidrograma CALCULADO para chuva de projeto espalhada na bacia e cheia de 5 a 50 anos; as "
+            "cheias de 2026 foram menores e com chuva desigual. Diferença não quer dizer que a tabela está errada.",
+            "- Taió, Ituporanga e Ibirama ficam abaixo das barragens Oeste, Sul e Norte: a barragem segura e solta "
+            "a água, e a hora do pico depende da operação das comportas, não só da chuva.",
+            "- Indaial (DCSC-00180) publica cota em altitude desde 26/09/2026; só o trecho depois da troca entra, e "
+            "só para horário. Gaspar (estação 21) é atualizada à mão e ficou de fora; Apiúna não tem régua.",
+            "- Itajaí é a DC-11 (Santa Regina, Volta de Cima), a régua de Itajaí onde a maré sobe menos, com a maré "
+            "tirada por análise harmônica.",
             ""]
     return "\n".join(out)
 
@@ -987,6 +1145,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--dcsc", type=Path, help="pasta com os DCSC-000NN.csv do consolidar_historico_dcsc.py")
     ap.add_argument("--serie", type=Path, help="pasta com os AAAA-MM.ndjson do coletor (arquivo-series/tempo-real)")
     ap.add_argument("--recente", type=Path, help="serie-recente.json do branch tempo-real (últimas 48 h)")
+    ap.add_argument("--dcsc-bruto", type=Path, nargs="*", default=[],
+                    help="pastas com as respostas cruas do baixar_historico_dcsc.py (Indaial, cota em altitude)")
     ap.add_argument("--agora", action="store_true", help="projeta a janela da cheia em curso")
     ap.add_argument("--gravar", action="store_true",
                     help="grava data/descida-medida.json e docs/DESCIDA-MEDIDA.md (nunca transito.json)")
@@ -997,7 +1157,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.recente and a.recente.exists():
         for titulo, s in ler_recente(a.recente).items():
             coletor[titulo] = sorted({**dict(coletor.get(titulo, [])), **dict(s)}.items())
-    grades, faltas = montar_grades(a.dcsc, coletor)
+    grades, faltas = montar_grades(a.dcsc, coletor, a.dcsc_bruto)
     if not grades:
         print("Nenhuma série. Passe --dcsc e/ou --serie.", file=sys.stderr)
         return 1
@@ -1008,12 +1168,22 @@ def main(argv: list[str] | None = None) -> int:
         "gerado_em": datetime.now().astimezone().isoformat(timespec="seconds"),
         "fuso": "horário de Brasília, sem fuso (como as séries)",
         "cobertura": cobertura(grades),
-        "fontes": {"dcsc": str(a.dcsc) if a.dcsc else None, "coletor": [f.name for f in arquivos],
+        "fontes": {"dcsc": str(a.dcsc) if a.dcsc else None, "dcsc_bruto": [str(x) for x in a.dcsc_bruto],
+                   "coletor": [f.name for f in arquivos],
                    "recente": bool(a.recente)},
         "metodos": {k: NOMES_METODO[k] for k in METODOS},
         "regra_de_confianca": "alta: ≥5 cheias, p25–p75 ≤3 h, métodos a ≤2 h; media: ≥3, ≤6 h, ≤4 h",
     }, **resultado}
 
+    print("COMPARAÇÃO COM A JICA (horas depois do pico de Rio do Sul)")
+    for t in resultado["comparacao_jica"]:
+        r = t.get("resumo") or {}
+        cr = (r.get("metodos") or {}).get("crista") or {}
+        medido = (f"{cr['mediana_h']:+.1f} h (IC90 {cr['ic90_mediana_h'][0]:+.1f} a {cr['ic90_mediana_h'][1]:+.1f}, "
+                  f"{cr['n']} cheias)" if cr.get("ic90_mediana_h") else "—")
+        print(f"  {t['para_nome']}: JICA {_faixa_h(t['jica_h'])} · medido {medido} · {t['veredito']}"
+              + (f" ({t['motivo']})" if t.get("motivo") else ""))
+    print("\nRÉGUA POR RÉGUA")
     for t in resultado["trechos"]:
         r = t.get("resumo")
         nome = f"{t['de_nome']} → {t['para_nome']}"

@@ -222,6 +222,52 @@ class TestEstatistica(unittest.TestCase):
         self.assertIsNone(md.referencia_jica("vidal-ramos", "botuvera"))
 
 
+class TestComparacaoComAJica(unittest.TestCase):
+    def item(self, conf, ic, mediana=5.0, jica=(7, 10)):
+        return {"jica_h": jica, "resumo": {"confianca": conf, "por_que_nao": None if conf != "insuficiente" else "x",
+                                           "metodos": {"crista": {"n": 6, "mediana_h": mediana, "ic90_mediana_h": ic}}}}
+
+    def test_veredito(self):
+        self.assertEqual(md.veredito_jica(self.item("media", [6.5, 9.0]))["veredito"], "bate com a JICA")
+        self.assertEqual(md.veredito_jica(self.item("media", [2.0, 4.0], mediana=3))["veredito"],
+                         "mais rápido que a JICA")
+        self.assertEqual(md.veredito_jica(self.item("alta", [12.0, 14.0], mediana=13))["veredito"],
+                         "mais lento que a JICA")
+        self.assertEqual(md.veredito_jica(self.item("insuficiente", [2.0, 4.0]))["veredito"], "inconclusivo")
+        self.assertEqual(md.veredito_jica({"jica_h": (9, 9), "sem_medida": "sem régua"})["veredito"], "não medido")
+
+    def test_toda_a_tabela_tem_ponto(self):
+        for chave in md.JICA_APOS_RIO_DO_SUL:
+            self.assertIn(md.PONTO_DA_JICA.get(chave, chave), md.PONTOS, chave)
+        self.assertEqual(len(md.COMPARACAO_JICA), len(md.JICA_APOS_RIO_DO_SUL) - 1)
+        self.assertEqual(md.PONTO_DA_JICA["itajai"], "itajai-dc11")  # Santa Regina: a maré sobe menos
+
+    def test_dcsc_bruto_corta_na_troca_de_referencia(self):
+        itens = ([{"ts": f"2026-09-26T{h:02d}:00:00.000", "rio_nivel": 2.2} for h in range(10, 20)]
+                 + [{"ts": "2026-09-26T21:40:00.000", "rio_nivel": 55.08},
+                    {"ts": "2026-09-26T21:50:00.000", "rio_nivel": 21474836.47},
+                    {"ts": "2026-09-26T22:00:00.000", "rio_nivel": 55.10}])
+        with tempfile.TemporaryDirectory() as d:
+            pasta = Path(d) / "DCSC-00180"
+            pasta.mkdir()
+            (pasta / "a.json").write_text(json.dumps({"resposta": {"data": {"historic": {"items": itens}}}}),
+                                          encoding="utf-8")
+            s = md.ler_dcsc_bruto([Path(d)], "DCSC-00180")
+        self.assertEqual([v for _, v in s], [55.08, 55.10])
+
+    def test_serie_esparsa_nao_vira_regua(self):
+        """Gaspar: leitura manual de horas em horas não tem crista medível — fica fora, com o motivo."""
+        titulo = md.PONTOS["gaspar"].fonte[1][0]
+        esparsa = [(T0 + timedelta(hours=7 * k), 2.0 + (k % 5)) for k in range(80)]
+        grades, faltas = md.montar_grades(None, {titulo: esparsa})
+        self.assertNotIn("gaspar", grades)
+        self.assertIn("sem série contínua", faltas["gaspar"])
+
+    def test_apiuna_nao_tem_regua(self):
+        _, faltas = md.montar_grades(None, {})
+        self.assertIn("sem régua ao vivo", faltas["apiuna"])
+
+
 class TestContrato(unittest.TestCase):
     def test_gravar_nunca_toca_o_transito(self):
         cima, baixo = varias_cheias(6.0)
