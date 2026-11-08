@@ -1,0 +1,3878 @@
+{
+ "_meta": {
+  "o_que_e": "Tempo de descida MEDIDO nas séries de 2026, por trecho e por método. Derivado; o site e o bot não leem. Nunca entra em transito.json por aqui (decisão do Jefferson).",
+  "gerado_em": "2026-11-08T00:24:32+00:00",
+  "fuso": "horário de Brasília, sem fuso (como as séries)",
+  "cobertura": {
+   "de": "2026-07-19T21:10",
+   "ate": "2026-11-07T21:00"
+  },
+  "fontes": {
+   "dcsc": "/tmp/claude-0/-home-user/82474091-dacc-54bb-a502-1f1eeb66cc1a/scratchpad/hist/series",
+   "coletor": [
+    "2026-08.ndjson",
+    "2026-09.ndjson",
+    "2026-10.ndjson",
+    "2026-11.ndjson"
+   ],
+   "recente": true
+  },
+  "metodos": {
+   "crista": "pico a pico",
+   "meia_subida": "meia-subida",
+   "centroide": "centro de massa",
+   "xcorr": "correlação",
+   "dtw": "DTW"
+  },
+  "regra_de_confianca": "alta: ≥5 cheias, p25–p75 ≤3 h, métodos a ≤2 h; media: ≥3, ≤6 h, ≤4 h"
+ },
+ "trechos": [
+  {
+   "rio": "itajai-acu",
+   "de": "taio",
+   "para": "rio-do-sul",
+   "de_nome": "Taió (DCSC-00041)",
+   "para_nome": "Rio do Sul (DCSC-00013)",
+   "jica_h": [
+    6,
+    6
+   ],
+   "eventos": [
+    {
+     "crista_montante": "2026-07-22T23:15",
+     "pico_montante_m": 6.02,
+     "amplitude_montante_m": 1.07,
+     "crista_jusante": "2026-07-22T15:40",
+     "lags_h": {
+      "crista": -7.6,
+      "meia_subida": -1.8,
+      "centroide": -5.7,
+      "xcorr": -0.7,
+      "dtw": -7.8
+     }
+    },
+    {
+     "crista_montante": "2026-07-30T02:55",
+     "pico_montante_m": 4.3,
+     "amplitude_montante_m": 1.82,
+     "crista_jusante": "2026-07-30T07:30",
+     "lags_h": {
+      "crista": 4.6,
+      "meia_subida": -1.8,
+      "centroide": 4.1,
+      "xcorr": -3.0,
+      "dtw": 6.7
+     }
+    },
+    {
+     "crista_montante": "2026-08-06T23:55",
+     "pico_montante_m": 4.03,
+     "amplitude_montante_m": 1.08,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-09T08:05",
+     "pico_montante_m": 3.76,
+     "amplitude_montante_m": 0.81,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-12T21:00",
+     "pico_montante_m": 4.46,
+     "amplitude_montante_m": 1.7,
+     "crista_jusante": "2026-08-13T06:00",
+     "lags_h": {
+      "crista": 9.0,
+      "meia_subida": 24.6,
+      "centroide": 12.6,
+      "xcorr": 4.2,
+      "dtw": 14.1
+     }
+    },
+    {
+     "crista_montante": "2026-08-15T12:30",
+     "pico_montante_m": 5.58,
+     "amplitude_montante_m": 0.93,
+     "crista_jusante": "2026-08-15T12:30",
+     "lags_h": {
+      "crista": 0.0,
+      "meia_subida": 0.8,
+      "centroide": 0.5,
+      "xcorr": -0.5,
+      "dtw": -0.2
+     }
+    },
+    {
+     "crista_montante": "2026-08-18T02:00",
+     "pico_montante_m": 5.92,
+     "amplitude_montante_m": 1.26,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-01T09:00",
+     "pico_montante_m": 7.16,
+     "amplitude_montante_m": 2.82,
+     "crista_jusante": "2026-09-01T05:35",
+     "lags_h": {
+      "crista": -3.4,
+      "meia_subida": 0.7,
+      "centroide": -2.3,
+      "xcorr": 1.7,
+      "dtw": -4.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-04T14:40",
+     "pico_montante_m": 5.77,
+     "amplitude_montante_m": 0.97,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-10T13:20",
+     "pico_montante_m": 5.48,
+     "amplitude_montante_m": 2.53,
+     "crista_jusante": "2026-09-12T00:25",
+     "lags_h": {
+      "crista": 35.1,
+      "meia_subida": 35.9,
+      "centroide": 38.5,
+      "xcorr": 35.0,
+      "dtw": 35.7
+     }
+    },
+    {
+     "crista_montante": "2026-09-12T05:25",
+     "pico_montante_m": 6.95,
+     "amplitude_montante_m": 2.68,
+     "crista_jusante": "2026-09-12T00:25",
+     "lags_h": {
+      "crista": -5.0,
+      "meia_subida": -0.1,
+      "centroide": -4.7,
+      "xcorr": -0.7,
+      "dtw": -8.0
+     }
+    },
+    {
+     "crista_montante": "2026-09-15T19:35",
+     "pico_montante_m": 6.08,
+     "amplitude_montante_m": 0.66,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-22T17:50",
+     "pico_montante_m": 6.57,
+     "amplitude_montante_m": 3.35,
+     "crista_jusante": "2026-09-22T09:15",
+     "lags_h": {
+      "crista": -8.6,
+      "meia_subida": 0.1,
+      "centroide": -6.5,
+      "xcorr": -1.2,
+      "dtw": -10.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-26T05:45",
+     "pico_montante_m": 5.71,
+     "amplitude_montante_m": 1.97,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-03T01:15",
+     "pico_montante_m": 5.72,
+     "amplitude_montante_m": 1.86,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-07T09:15",
+     "pico_montante_m": 5.26,
+     "amplitude_montante_m": 1.86,
+     "crista_jusante": "2026-10-08T00:55",
+     "lags_h": {
+      "crista": 15.7,
+      "meia_subida": 5.5,
+      "centroide": 16.4,
+      "xcorr": 5.3,
+      "dtw": 16.8
+     }
+    },
+    {
+     "crista_montante": "2026-10-13T14:50",
+     "pico_montante_m": 3.42,
+     "amplitude_montante_m": 0.66,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-16T14:25",
+     "pico_montante_m": 4.58,
+     "amplitude_montante_m": 1.82,
+     "crista_jusante": "2026-10-16T09:10",
+     "lags_h": {
+      "crista": -5.2,
+      "meia_subida": -1.4,
+      "centroide": 4.2,
+      "xcorr": -1.0,
+      "dtw": -1.7
+     }
+    },
+    {
+     "crista_montante": "2026-10-19T15:00",
+     "pico_montante_m": 3.95,
+     "amplitude_montante_m": 1.76,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-25T07:25",
+     "pico_montante_m": 5.28,
+     "amplitude_montante_m": 2.59,
+     "crista_jusante": "2026-10-26T00:10",
+     "lags_h": {
+      "crista": 16.8,
+      "meia_subida": 6.6,
+      "centroide": 13.6,
+      "xcorr": 6.0,
+      "dtw": 17.0
+     }
+    },
+    {
+     "crista_montante": "2026-10-30T23:35",
+     "pico_montante_m": 3.29,
+     "amplitude_montante_m": 0.77,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-02T16:35",
+     "pico_montante_m": 4.69,
+     "amplitude_montante_m": 1.44,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-05T08:00",
+     "pico_montante_m": 5.96,
+     "amplitude_montante_m": 2.47,
+     "crista_jusante": "2026-11-05T00:05",
+     "lags_h": {
+      "crista": -7.9,
+      "meia_subida": 9.1,
+      "centroide": -4.4,
+      "xcorr": 9.2,
+      "dtw": -7.2
+     }
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 12,
+    "metodos": {
+     "crista": {
+      "n": 12,
+      "mediana_h": -1.7,
+      "p25_h": -5.8,
+      "p75_h": 10.7,
+      "ic90_mediana_h": [
+       -6.3,
+       9.0
+      ]
+     },
+     "meia_subida": {
+      "n": 12,
+      "mediana_h": 0.7,
+      "p25_h": -0.4,
+      "p75_h": 7.2,
+      "ic90_mediana_h": [
+       -0.4,
+       6.6
+      ]
+     },
+     "centroide": {
+      "n": 12,
+      "mediana_h": 2.3,
+      "p25_h": -4.5,
+      "p75_h": 12.9,
+      "ic90_mediana_h": [
+       -4.4,
+       12.6
+      ]
+     },
+     "xcorr": {
+      "n": 12,
+      "mediana_h": 0.6,
+      "p25_h": -0.8,
+      "p75_h": 5.5,
+      "ic90_mediana_h": [
+       -0.7,
+       5.3
+      ]
+     },
+     "dtw": {
+      "n": 12,
+      "mediana_h": -0.9,
+      "p25_h": -7.4,
+      "p75_h": 14.8,
+      "ic90_mediana_h": [
+       -7.2,
+       14.1
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 4.0,
+    "confianca": "insuficiente",
+    "por_que_nao": "os eventos discordam: p25–p75 de 16.5 h",
+    "theil_sen_h_por_m": -0.6,
+    "cristas_simultaneas": 1
+   }
+  },
+  {
+   "rio": "itajai-acu",
+   "de": "ituporanga",
+   "para": "rio-do-sul",
+   "de_nome": "Ituporanga (DCSC-00039)",
+   "para_nome": "Rio do Sul (DCSC-00013)",
+   "jica_h": [
+    -1,
+    -1
+   ],
+   "eventos": [
+    {
+     "crista_montante": "2026-07-22T10:15",
+     "pico_montante_m": 3.13,
+     "amplitude_montante_m": 1.81,
+     "crista_jusante": "2026-07-22T15:40",
+     "lags_h": {
+      "crista": 5.4,
+      "meia_subida": 7.1,
+      "centroide": 9.5,
+      "xcorr": 5.0,
+      "dtw": 8.1
+     }
+    },
+    {
+     "crista_montante": "2026-07-24T16:55",
+     "pico_montante_m": 3.4,
+     "amplitude_montante_m": 1.92,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-30T00:30",
+     "pico_montante_m": 2.76,
+     "amplitude_montante_m": 1.23,
+     "crista_jusante": "2026-07-30T07:30",
+     "lags_h": {
+      "crista": 7.0,
+      "meia_subida": -0.8,
+      "centroide": 5.3,
+      "xcorr": -0.0,
+      "dtw": 8.9
+     }
+    },
+    {
+     "crista_montante": "2026-08-13T01:40",
+     "pico_montante_m": 3.42,
+     "amplitude_montante_m": 1.89,
+     "crista_jusante": "2026-08-13T06:00",
+     "lags_h": {
+      "crista": 4.3,
+      "meia_subida": 6.4,
+      "centroide": 6.5,
+      "xcorr": 5.5,
+      "dtw": 6.2
+     }
+    },
+    {
+     "crista_montante": "2026-08-17T11:30",
+     "pico_montante_m": 3.53,
+     "amplitude_montante_m": 0.69,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-19T19:15",
+     "pico_montante_m": 4.05,
+     "amplitude_montante_m": 1.21,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-30T08:55",
+     "pico_montante_m": 3.24,
+     "amplitude_montante_m": 1.92,
+     "crista_jusante": "2026-08-29T23:35",
+     "lags_h": {
+      "crista": -9.3,
+      "meia_subida": 6.6,
+      "centroide": 4.0,
+      "xcorr": 3.7,
+      "dtw": -1.9
+     }
+    },
+    {
+     "crista_montante": "2026-09-06T21:10",
+     "pico_montante_m": 4.26,
+     "amplitude_montante_m": 0.5,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-08T00:40",
+     "pico_montante_m": 4.09,
+     "amplitude_montante_m": 3.11,
+     "crista_jusante": "2026-09-08T11:50",
+     "lags_h": {
+      "crista": 11.2,
+      "meia_subida": 7.2,
+      "centroide": 6.3,
+      "xcorr": 6.1,
+      "dtw": 8.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-10T09:30",
+     "pico_montante_m": 2.45,
+     "amplitude_montante_m": 0.98,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-14T18:30",
+     "pico_montante_m": 3.87,
+     "amplitude_montante_m": 2.34,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-20T06:40",
+     "pico_montante_m": 3.14,
+     "amplitude_montante_m": 1.71,
+     "crista_jusante": "2026-09-20T13:25",
+     "lags_h": {
+      "crista": 6.8,
+      "meia_subida": 4.8,
+      "centroide": 10.2,
+      "xcorr": 6.2,
+      "dtw": 10.6
+     }
+    },
+    {
+     "crista_montante": "2026-09-21T20:00",
+     "pico_montante_m": 1.95,
+     "amplitude_montante_m": 0.82,
+     "crista_jusante": "2026-09-22T09:15",
+     "lags_h": {
+      "crista": 13.2,
+      "meia_subida": 7.8,
+      "centroide": 15.7,
+      "xcorr": null,
+      "dtw": 18.2
+     }
+    },
+    {
+     "crista_montante": "2026-10-02T20:05",
+     "pico_montante_m": 4.37,
+     "amplitude_montante_m": 3.3,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-07T14:25",
+     "pico_montante_m": 4.37,
+     "amplitude_montante_m": 1.44,
+     "crista_jusante": "2026-10-08T00:55",
+     "lags_h": {
+      "crista": 10.5,
+      "meia_subida": 5.0,
+      "centroide": 11.0,
+      "xcorr": 6.3,
+      "dtw": 11.5
+     }
+    },
+    {
+     "crista_montante": "2026-10-15T10:00",
+     "pico_montante_m": 2.77,
+     "amplitude_montante_m": 1.35,
+     "crista_jusante": "2026-10-16T09:10",
+     "lags_h": {
+      "crista": 23.2,
+      "meia_subida": 17.8,
+      "centroide": 31.1,
+      "xcorr": 17.6,
+      "dtw": 6.2
+     }
+    },
+    {
+     "crista_montante": "2026-10-16T14:25",
+     "pico_montante_m": 2.13,
+     "amplitude_montante_m": 0.71,
+     "crista_jusante": "2026-10-16T09:10",
+     "lags_h": {
+      "crista": -5.2,
+      "meia_subida": 6.7,
+      "centroide": 2.0,
+      "xcorr": 17.7,
+      "dtw": 23.5
+     }
+    },
+    {
+     "crista_montante": "2026-10-30T19:30",
+     "pico_montante_m": 1.4,
+     "amplitude_montante_m": 1.23,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-04T08:40",
+     "pico_montante_m": 2.89,
+     "amplitude_montante_m": 1.83,
+     "crista_jusante": "2026-11-05T00:05",
+     "lags_h": {
+      "crista": 15.4,
+      "meia_subida": 13.9,
+      "centroide": 17.3,
+      "xcorr": 8.1,
+      "dtw": 19.2
+     }
+    },
+    {
+     "crista_montante": "2026-11-06T13:10",
+     "pico_montante_m": 2.63,
+     "amplitude_montante_m": 1.56,
+     "crista_jusante": "2026-11-07T20:10",
+     "lags_h": {
+      "crista": 31.0,
+      "meia_subida": 24.8,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "a crista de baixo está na ponta da série (pode não ter passado)"
+    },
+    {
+     "crista_montante": "2026-11-07T13:05",
+     "pico_montante_m": 2.21,
+     "amplitude_montante_m": 0.92,
+     "crista_jusante": "2026-11-07T20:10",
+     "lags_h": {
+      "crista": 7.1,
+      "meia_subida": 4.2,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "a crista de baixo está na ponta da série (pode não ter passado)"
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 11,
+    "metodos": {
+     "crista": {
+      "n": 11,
+      "mediana_h": 7.0,
+      "p25_h": 4.9,
+      "p75_h": 12.2,
+      "ic90_mediana_h": [
+       5.4,
+       13.2
+      ]
+     },
+     "meia_subida": {
+      "n": 11,
+      "mediana_h": 6.7,
+      "p25_h": 5.7,
+      "p75_h": 7.5,
+      "ic90_mediana_h": [
+       5.0,
+       7.8
+      ]
+     },
+     "centroide": {
+      "n": 11,
+      "mediana_h": 9.5,
+      "p25_h": 5.8,
+      "p75_h": 13.4,
+      "ic90_mediana_h": [
+       6.3,
+       15.7
+      ]
+     },
+     "xcorr": {
+      "n": 10,
+      "mediana_h": 6.1,
+      "p25_h": 5.1,
+      "p75_h": 7.6,
+      "ic90_mediana_h": [
+       5.0,
+       8.1
+      ]
+     },
+     "dtw": {
+      "n": 11,
+      "mediana_h": 8.9,
+      "p25_h": 7.2,
+      "p75_h": 14.9,
+      "ic90_mediana_h": [
+       8.1,
+       18.2
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 3.4,
+    "confianca": "insuficiente",
+    "por_que_nao": "os eventos discordam: p25–p75 de 7.3 h",
+    "theil_sen_h_por_m": -3.37,
+    "cristas_simultaneas": 0
+   }
+  },
+  {
+   "rio": "itajai-acu",
+   "de": "rio-do-sul",
+   "para": "ascurra",
+   "de_nome": "Rio do Sul (DCSC-00013)",
+   "para_nome": "Ascurra (DCSC-00003)",
+   "jica_h": null,
+   "eventos": [
+    {
+     "crista_montante": "2026-07-22T15:40",
+     "pico_montante_m": 5.76,
+     "amplitude_montante_m": 0.89,
+     "crista_jusante": "2026-07-22T19:55",
+     "lags_h": {
+      "crista": 4.2,
+      "meia_subida": 3.5,
+      "centroide": 4.0,
+      "xcorr": 5.7,
+      "dtw": 4.3
+     }
+    },
+    {
+     "crista_montante": "2026-07-30T07:30",
+     "pico_montante_m": 4.43,
+     "amplitude_montante_m": 1.29,
+     "crista_jusante": "2026-07-30T19:00",
+     "lags_h": {
+      "crista": 11.5,
+      "meia_subida": 3.5,
+      "centroide": 4.0,
+      "xcorr": null,
+      "dtw": 6.3
+     }
+    },
+    {
+     "crista_montante": "2026-08-13T06:00",
+     "pico_montante_m": 4.66,
+     "amplitude_montante_m": 0.83,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-15T12:30",
+     "pico_montante_m": 5.51,
+     "amplitude_montante_m": 0.52,
+     "crista_jusante": "2026-08-15T14:35",
+     "lags_h": {
+      "crista": 2.1,
+      "meia_subida": 0.8,
+      "centroide": 1.8,
+      "xcorr": 1.7,
+      "dtw": 2.7
+     }
+    },
+    {
+     "crista_montante": "2026-08-29T23:35",
+     "pico_montante_m": 3.83,
+     "amplitude_montante_m": 0.5,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-01T05:35",
+     "pico_montante_m": 7.06,
+     "amplitude_montante_m": 1.68,
+     "crista_jusante": "2026-09-01T05:40",
+     "lags_h": {
+      "crista": 0.1,
+      "meia_subida": -0.4,
+      "centroide": -2.4,
+      "xcorr": 0.3,
+      "dtw": -2.7
+     }
+    },
+    {
+     "crista_montante": "2026-09-08T11:50",
+     "pico_montante_m": 4.78,
+     "amplitude_montante_m": 1.19,
+     "crista_jusante": "2026-09-08T19:10",
+     "lags_h": {
+      "crista": 7.3,
+      "meia_subida": 6.4,
+      "centroide": 5.1,
+      "xcorr": 6.8,
+      "dtw": 1.5
+     }
+    },
+    {
+     "crista_montante": "2026-09-12T00:25",
+     "pico_montante_m": 6.05,
+     "amplitude_montante_m": 0.84,
+     "crista_jusante": "2026-09-12T00:05",
+     "lags_h": {
+      "crista": -0.3,
+      "meia_subida": -2.7,
+      "centroide": -2.8,
+      "xcorr": -0.3,
+      "dtw": -2.3
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T13:25",
+     "pico_montante_m": 5.45,
+     "amplitude_montante_m": 1.46,
+     "crista_jusante": "2026-09-20T18:05",
+     "lags_h": {
+      "crista": 4.7,
+      "meia_subida": 3.6,
+      "centroide": 2.5,
+      "xcorr": 3.7,
+      "dtw": 3.7
+     }
+    },
+    {
+     "crista_montante": "2026-09-22T09:15",
+     "pico_montante_m": 6.48,
+     "amplitude_montante_m": 1.04,
+     "crista_jusante": "2026-09-22T07:40",
+     "lags_h": {
+      "crista": -1.6,
+      "meia_subida": -0.6,
+      "centroide": -2.0,
+      "xcorr": 1.0,
+      "dtw": -3.3
+     }
+    },
+    {
+     "crista_montante": "2026-09-29T22:15",
+     "pico_montante_m": 5.33,
+     "amplitude_montante_m": 0.64,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-01T08:35",
+     "pico_montante_m": 6.52,
+     "amplitude_montante_m": 0.67,
+     "crista_jusante": "2026-10-01T13:45",
+     "lags_h": {
+      "crista": 5.2,
+      "meia_subida": 2.4,
+      "centroide": 4.3,
+      "xcorr": 5.0,
+      "dtw": 5.2
+     }
+    },
+    {
+     "crista_montante": "2026-10-08T00:55",
+     "pico_montante_m": 5.73,
+     "amplitude_montante_m": 1.91,
+     "crista_jusante": "2026-10-07T20:25",
+     "lags_h": {
+      "crista": -4.5,
+      "meia_subida": 3.8,
+      "centroide": -2.3,
+      "xcorr": 2.3,
+      "dtw": -0.6
+     }
+    },
+    {
+     "crista_montante": "2026-10-16T09:10",
+     "pico_montante_m": 4.42,
+     "amplitude_montante_m": 1.53,
+     "crista_jusante": "2026-10-16T13:20",
+     "lags_h": {
+      "crista": 4.2,
+      "meia_subida": 6.1,
+      "centroide": 2.7,
+      "xcorr": 7.0,
+      "dtw": -1.5
+     }
+    },
+    {
+     "crista_montante": "2026-10-26T00:10",
+     "pico_montante_m": 3.65,
+     "amplitude_montante_m": 1.29,
+     "crista_jusante": "2026-10-25T21:15",
+     "lags_h": {
+      "crista": -2.9,
+      "meia_subida": 12.3,
+      "centroide": 5.1,
+      "xcorr": 1.0,
+      "dtw": -5.0
+     }
+    },
+    {
+     "crista_montante": "2026-11-05T00:05",
+     "pico_montante_m": 8.25,
+     "amplitude_montante_m": 3.0,
+     "crista_jusante": "2026-11-05T01:45",
+     "lags_h": {
+      "crista": 1.7,
+      "meia_subida": 1.9,
+      "centroide": 2.1,
+      "xcorr": 3.7,
+      "dtw": 2.0
+     }
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 13,
+    "metodos": {
+     "crista": {
+      "n": 13,
+      "mediana_h": 2.1,
+      "p25_h": -0.3,
+      "p75_h": 4.7,
+      "ic90_mediana_h": [
+       -0.3,
+       4.7
+      ]
+     },
+     "meia_subida": {
+      "n": 13,
+      "mediana_h": 3.5,
+      "p25_h": 0.8,
+      "p75_h": 3.8,
+      "ic90_mediana_h": [
+       0.8,
+       3.8
+      ]
+     },
+     "centroide": {
+      "n": 13,
+      "mediana_h": 2.5,
+      "p25_h": -2.0,
+      "p75_h": 4.0,
+      "ic90_mediana_h": [
+       -2.0,
+       4.0
+      ]
+     },
+     "xcorr": {
+      "n": 12,
+      "mediana_h": 3.0,
+      "p25_h": 1.0,
+      "p75_h": 5.2,
+      "ic90_mediana_h": [
+       1.0,
+       5.0
+      ]
+     },
+     "dtw": {
+      "n": 13,
+      "mediana_h": 1.5,
+      "p25_h": -2.3,
+      "p75_h": 3.7,
+      "ic90_mediana_h": [
+       -2.3,
+       3.7
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 2.0,
+    "confianca": "media",
+    "por_que_nao": null,
+    "theil_sen_h_por_m": -1.84,
+    "cristas_simultaneas": 2
+   }
+  },
+  {
+   "rio": "itajai-acu",
+   "de": "ascurra",
+   "para": "blumenau",
+   "de_nome": "Ascurra (DCSC-00003)",
+   "para_nome": "Blumenau (PADKND + AlertaBlu)",
+   "jica_h": null,
+   "eventos": [
+    {
+     "crista_montante": "2026-07-19T21:50",
+     "pico_montante_m": 6.48,
+     "amplitude_montante_m": 0.87,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-20T19:50",
+     "pico_montante_m": 6.37,
+     "amplitude_montante_m": 0.74,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-22T19:55",
+     "pico_montante_m": 8.63,
+     "amplitude_montante_m": 1.2,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-30T19:00",
+     "pico_montante_m": 7.3,
+     "amplitude_montante_m": 0.99,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-01T21:20",
+     "pico_montante_m": 6.74,
+     "amplitude_montante_m": 0.51,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-02T21:30",
+     "pico_montante_m": 6.62,
+     "amplitude_montante_m": 0.58,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-03T19:25",
+     "pico_montante_m": 6.55,
+     "amplitude_montante_m": 0.61,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-04T19:20",
+     "pico_montante_m": 6.47,
+     "amplitude_montante_m": 0.8,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-05T19:35",
+     "pico_montante_m": 6.46,
+     "amplitude_montante_m": 0.57,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-07T18:20",
+     "pico_montante_m": 7.06,
+     "amplitude_montante_m": 0.57,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-15T14:35",
+     "pico_montante_m": 8.53,
+     "amplitude_montante_m": 0.76,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-01T05:40",
+     "pico_montante_m": 10.13,
+     "amplitude_montante_m": 2.19,
+     "crista_jusante": "2026-09-01T10:30",
+     "lags_h": {
+      "crista": 4.8,
+      "meia_subida": null,
+      "centroide": 7.1,
+      "xcorr": null,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-09-08T19:10",
+     "pico_montante_m": 7.55,
+     "amplitude_montante_m": 0.55,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-10T17:15",
+     "pico_montante_m": 7.97,
+     "amplitude_montante_m": 0.56,
+     "crista_jusante": "2026-09-10T18:30",
+     "lags_h": {
+      "crista": 1.2,
+      "meia_subida": 1.8,
+      "centroide": 2.6,
+      "xcorr": 4.5,
+      "dtw": 3.5
+     }
+    },
+    {
+     "crista_montante": "2026-09-12T00:05",
+     "pico_montante_m": 10.45,
+     "amplitude_montante_m": 2.47,
+     "crista_jusante": "2026-09-12T05:20",
+     "lags_h": {
+      "crista": 5.2,
+      "meia_subida": 4.0,
+      "centroide": null,
+      "xcorr": 4.8,
+      "dtw": 5.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T18:05",
+     "pico_montante_m": 8.35,
+     "amplitude_montante_m": 0.76,
+     "crista_jusante": "2026-09-20T21:45",
+     "lags_h": {
+      "crista": 3.7,
+      "meia_subida": 0.4,
+      "centroide": 3.1,
+      "xcorr": 1.5,
+      "dtw": 3.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-22T07:40",
+     "pico_montante_m": 9.41,
+     "amplitude_montante_m": 1.4,
+     "crista_jusante": "2026-09-22T11:50",
+     "lags_h": {
+      "crista": 4.2,
+      "meia_subida": 0.0,
+      "centroide": 3.2,
+      "xcorr": 1.4,
+      "dtw": 5.3
+     }
+    },
+    {
+     "crista_montante": "2026-09-28T22:25",
+     "pico_montante_m": 8.24,
+     "amplitude_montante_m": 0.51,
+     "crista_jusante": "2026-09-29T06:05",
+     "lags_h": {
+      "crista": 7.7,
+      "meia_subida": 3.2,
+      "centroide": 5.9,
+      "xcorr": 4.5,
+      "dtw": 7.1
+     }
+    },
+    {
+     "crista_montante": "2026-10-01T13:45",
+     "pico_montante_m": 8.76,
+     "amplitude_montante_m": 0.76,
+     "crista_jusante": "2026-10-01T19:15",
+     "lags_h": {
+      "crista": 5.5,
+      "meia_subida": 4.4,
+      "centroide": 5.5,
+      "xcorr": 5.2,
+      "dtw": 5.8
+     }
+    },
+    {
+     "crista_montante": "2026-10-07T20:25",
+     "pico_montante_m": 8.29,
+     "amplitude_montante_m": 0.7,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-16T13:20",
+     "pico_montante_m": 7.61,
+     "amplitude_montante_m": 0.82,
+     "crista_jusante": "2026-10-16T20:10",
+     "lags_h": {
+      "crista": 6.8,
+      "meia_subida": 5.0,
+      "centroide": 6.5,
+      "xcorr": 5.5,
+      "dtw": 7.7
+     }
+    },
+    {
+     "crista_montante": "2026-10-25T21:15",
+     "pico_montante_m": 7.17,
+     "amplitude_montante_m": 0.73,
+     "crista_jusante": "2026-10-26T05:05",
+     "lags_h": {
+      "crista": 7.8,
+      "meia_subida": -10.2,
+      "centroide": 0.1,
+      "xcorr": 6.8,
+      "dtw": 1.5
+     }
+    },
+    {
+     "crista_montante": "2026-10-31T21:25",
+     "pico_montante_m": 6.6,
+     "amplitude_montante_m": 0.58,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-01T22:05",
+     "pico_montante_m": 6.62,
+     "amplitude_montante_m": 0.65,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-05T01:45",
+     "pico_montante_m": 9.46,
+     "amplitude_montante_m": 1.55,
+     "crista_jusante": "2026-11-05T21:30",
+     "lags_h": {
+      "crista": 19.8,
+      "meia_subida": null,
+      "centroide": 20.2,
+      "xcorr": null,
+      "dtw": null
+     }
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 10,
+    "metodos": {
+     "crista": {
+      "n": 10,
+      "mediana_h": 5.4,
+      "p25_h": 4.3,
+      "p75_h": 7.5,
+      "ic90_mediana_h": [
+       4.2,
+       7.3
+      ]
+     },
+     "meia_subida": {
+      "n": 8,
+      "mediana_h": 2.5,
+      "p25_h": 0.3,
+      "p75_h": 4.1,
+      "ic90_mediana_h": [
+       0.2,
+       4.2
+      ]
+     },
+     "centroide": {
+      "n": 9,
+      "mediana_h": 5.5,
+      "p25_h": 3.1,
+      "p75_h": 6.5,
+      "ic90_mediana_h": [
+       3.1,
+       6.5
+      ]
+     },
+     "xcorr": {
+      "n": 8,
+      "mediana_h": 4.7,
+      "p25_h": 3.7,
+      "p75_h": 5.3,
+      "ic90_mediana_h": [
+       3.0,
+       5.3
+      ]
+     },
+     "dtw": {
+      "n": 8,
+      "mediana_h": 5.6,
+      "p25_h": 3.8,
+      "p75_h": 6.1,
+      "ic90_mediana_h": [
+       3.7,
+       6.5
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 3.1,
+    "confianca": "media",
+    "por_que_nao": null,
+    "theil_sen_h_por_m": 0.77,
+    "cristas_simultaneas": 0
+   }
+  },
+  {
+   "rio": "itajai-acu",
+   "de": "rio-do-sul",
+   "para": "blumenau",
+   "de_nome": "Rio do Sul (DCSC-00013)",
+   "para_nome": "Blumenau (PADKND + AlertaBlu)",
+   "jica_h": [
+    7,
+    10
+   ],
+   "eventos": [
+    {
+     "crista_montante": "2026-07-22T15:40",
+     "pico_montante_m": 5.76,
+     "amplitude_montante_m": 0.89,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-30T07:30",
+     "pico_montante_m": 4.43,
+     "amplitude_montante_m": 1.29,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-13T06:00",
+     "pico_montante_m": 4.66,
+     "amplitude_montante_m": 0.83,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-15T12:30",
+     "pico_montante_m": 5.51,
+     "amplitude_montante_m": 0.52,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-29T23:35",
+     "pico_montante_m": 3.83,
+     "amplitude_montante_m": 0.5,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-01T05:35",
+     "pico_montante_m": 7.06,
+     "amplitude_montante_m": 1.68,
+     "crista_jusante": "2026-09-01T10:30",
+     "lags_h": {
+      "crista": 4.9,
+      "meia_subida": null,
+      "centroide": 4.7,
+      "xcorr": null,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-09-08T11:50",
+     "pico_montante_m": 4.78,
+     "amplitude_montante_m": 1.19,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-12T00:25",
+     "pico_montante_m": 6.05,
+     "amplitude_montante_m": 0.84,
+     "crista_jusante": "2026-09-12T05:20",
+     "lags_h": {
+      "crista": 4.9,
+      "meia_subida": 1.3,
+      "centroide": null,
+      "xcorr": 4.2,
+      "dtw": 3.5
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T13:25",
+     "pico_montante_m": 5.45,
+     "amplitude_montante_m": 1.46,
+     "crista_jusante": "2026-09-20T21:45",
+     "lags_h": {
+      "crista": 8.3,
+      "meia_subida": 4.0,
+      "centroide": 5.5,
+      "xcorr": 3.8,
+      "dtw": 6.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-22T09:15",
+     "pico_montante_m": 6.48,
+     "amplitude_montante_m": 1.04,
+     "crista_jusante": "2026-09-22T11:50",
+     "lags_h": {
+      "crista": 2.6,
+      "meia_subida": -0.6,
+      "centroide": 1.2,
+      "xcorr": 1.5,
+      "dtw": 2.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-29T22:15",
+     "pico_montante_m": 5.33,
+     "amplitude_montante_m": 0.64,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-01T08:35",
+     "pico_montante_m": 6.52,
+     "amplitude_montante_m": 0.67,
+     "crista_jusante": "2026-10-01T19:15",
+     "lags_h": {
+      "crista": 10.7,
+      "meia_subida": 6.9,
+      "centroide": 9.8,
+      "xcorr": 8.8,
+      "dtw": 11.2
+     }
+    },
+    {
+     "crista_montante": "2026-10-08T00:55",
+     "pico_montante_m": 5.73,
+     "amplitude_montante_m": 1.91,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-16T09:10",
+     "pico_montante_m": 4.42,
+     "amplitude_montante_m": 1.53,
+     "crista_jusante": "2026-10-16T20:10",
+     "lags_h": {
+      "crista": 11.0,
+      "meia_subida": 11.1,
+      "centroide": 9.2,
+      "xcorr": 12.7,
+      "dtw": 6.0
+     }
+    },
+    {
+     "crista_montante": "2026-10-26T00:10",
+     "pico_montante_m": 3.65,
+     "amplitude_montante_m": 1.29,
+     "crista_jusante": "2026-10-26T05:05",
+     "lags_h": {
+      "crista": 4.9,
+      "meia_subida": 2.1,
+      "centroide": 5.2,
+      "xcorr": null,
+      "dtw": 7.8
+     }
+    },
+    {
+     "crista_montante": "2026-11-05T00:05",
+     "pico_montante_m": 8.25,
+     "amplitude_montante_m": 3.0,
+     "crista_jusante": "2026-11-05T21:30",
+     "lags_h": {
+      "crista": 21.4,
+      "meia_subida": null,
+      "centroide": 22.3,
+      "xcorr": null,
+      "dtw": null
+     }
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 8,
+    "metodos": {
+     "crista": {
+      "n": 8,
+      "mediana_h": 6.6,
+      "p25_h": 4.9,
+      "p75_h": 10.8,
+      "ic90_mediana_h": [
+       4.9,
+       10.8
+      ]
+     },
+     "meia_subida": {
+      "n": 6,
+      "mediana_h": 3.1,
+      "p25_h": 1.5,
+      "p75_h": 6.2,
+      "ic90_mediana_h": [
+       0.8,
+       7.5
+      ]
+     },
+     "centroide": {
+      "n": 7,
+      "mediana_h": 5.5,
+      "p25_h": 4.9,
+      "p75_h": 9.5,
+      "ic90_mediana_h": [
+       4.7,
+       9.8
+      ]
+     },
+     "xcorr": {
+      "n": 5,
+      "mediana_h": 4.2,
+      "p25_h": 3.8,
+      "p75_h": 8.8,
+      "ic90_mediana_h": [
+       1.5,
+       8.8
+      ]
+     },
+     "dtw": {
+      "n": 6,
+      "mediana_h": 6.4,
+      "p25_h": 4.1,
+      "p75_h": 7.5,
+      "ic90_mediana_h": [
+       3.5,
+       9.0
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 3.5,
+    "confianca": "media",
+    "por_que_nao": null,
+    "theil_sen_h_por_m": 5.06,
+    "cristas_simultaneas": 0
+   }
+  },
+  {
+   "rio": "itajai-acu",
+   "de": "blumenau",
+   "para": "ilhota",
+   "de_nome": "Blumenau (PADKND + AlertaBlu)",
+   "para_nome": "Ilhota (DCSC-00030)",
+   "jica_h": [
+    5,
+    7
+   ],
+   "eventos": [
+    {
+     "crista_montante": "2026-09-01T10:30",
+     "pico_montante_m": 7.57,
+     "amplitude_montante_m": 4.17,
+     "crista_jusante": "2026-09-01T11:10",
+     "lags_h": {
+      "crista": 0.7,
+      "meia_subida": null,
+      "centroide": -2.1,
+      "xcorr": null,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-09-10T18:30",
+     "pico_montante_m": 4.26,
+     "amplitude_montante_m": 1.1,
+     "crista_jusante": "2026-09-10T22:20",
+     "lags_h": {
+      "crista": 3.8,
+      "meia_subida": 2.5,
+      "centroide": 1.3,
+      "xcorr": null,
+      "dtw": 2.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-12T05:20",
+     "pico_montante_m": 7.86,
+     "amplitude_montante_m": 4.3,
+     "crista_jusante": "2026-09-12T08:55",
+     "lags_h": {
+      "crista": 3.6,
+      "meia_subida": 1.9,
+      "centroide": null,
+      "xcorr": -0.2,
+      "dtw": 3.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T21:45",
+     "pico_montante_m": 4.29,
+     "amplitude_montante_m": 0.94,
+     "crista_jusante": "2026-09-21T02:35",
+     "lags_h": {
+      "crista": 4.8,
+      "meia_subida": 3.0,
+      "centroide": 2.7,
+      "xcorr": 5.2,
+      "dtw": 3.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-22T11:50",
+     "pico_montante_m": 6.62,
+     "amplitude_montante_m": 3.08,
+     "crista_jusante": "2026-09-22T19:05",
+     "lags_h": {
+      "crista": 7.2,
+      "meia_subida": 1.0,
+      "centroide": 4.9,
+      "xcorr": 2.3,
+      "dtw": 6.7
+     }
+    },
+    {
+     "crista_montante": "2026-09-29T06:05",
+     "pico_montante_m": 3.87,
+     "amplitude_montante_m": 0.7,
+     "crista_jusante": "2026-09-28T22:30",
+     "lags_h": {
+      "crista": -7.6,
+      "meia_subida": -59.4,
+      "centroide": -3.6,
+      "xcorr": null,
+      "dtw": -4.1
+     }
+    },
+    {
+     "crista_montante": "2026-10-01T19:15",
+     "pico_montante_m": 4.53,
+     "amplitude_montante_m": 1.03,
+     "crista_jusante": "2026-10-01T23:25",
+     "lags_h": {
+      "crista": 4.2,
+      "meia_subida": -0.1,
+      "centroide": 2.9,
+      "xcorr": 2.5,
+      "dtw": 3.2
+     }
+    },
+    {
+     "crista_montante": "2026-10-07T07:55",
+     "pico_montante_m": 5.04,
+     "amplitude_montante_m": 1.6,
+     "crista_jusante": "2026-10-07T08:35",
+     "lags_h": {
+      "crista": 0.7,
+      "meia_subida": 4.4,
+      "centroide": null,
+      "xcorr": 2.5,
+      "dtw": -5.3
+     }
+    },
+    {
+     "crista_montante": "2026-10-16T20:10",
+     "pico_montante_m": 3.18,
+     "amplitude_montante_m": 1.02,
+     "crista_jusante": "2026-10-17T23:50",
+     "lags_h": {
+      "crista": 27.7,
+      "meia_subida": 0.0,
+      "centroide": 21.3,
+      "xcorr": null,
+      "dtw": 1.0
+     }
+    },
+    {
+     "crista_montante": "2026-10-26T05:05",
+     "pico_montante_m": 2.92,
+     "amplitude_montante_m": 1.29,
+     "crista_jusante": "2026-10-26T05:05",
+     "lags_h": {
+      "crista": 0.0,
+      "meia_subida": 24.3,
+      "centroide": -5.3,
+      "xcorr": null,
+      "dtw": -1.4
+     }
+    },
+    {
+     "crista_montante": "2026-11-05T21:30",
+     "pico_montante_m": 4.91,
+     "amplitude_montante_m": 1.43,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 10,
+    "metodos": {
+     "crista": {
+      "n": 10,
+      "mediana_h": 3.7,
+      "p25_h": 0.7,
+      "p75_h": 4.7,
+      "ic90_mediana_h": [
+       0.7,
+       4.8
+      ]
+     },
+     "meia_subida": {
+      "n": 9,
+      "mediana_h": 1.9,
+      "p25_h": 0.0,
+      "p75_h": 3.0,
+      "ic90_mediana_h": [
+       0.0,
+       3.0
+      ]
+     },
+     "centroide": {
+      "n": 8,
+      "mediana_h": 2.0,
+      "p25_h": -2.4,
+      "p75_h": 3.4,
+      "ic90_mediana_h": [
+       -2.8,
+       3.9
+      ]
+     },
+     "xcorr": {
+      "n": 5,
+      "mediana_h": 2.5,
+      "p25_h": 2.3,
+      "p75_h": 2.5,
+      "ic90_mediana_h": [
+       -0.2,
+       5.2
+      ]
+     },
+     "dtw": {
+      "n": 9,
+      "mediana_h": 2.2,
+      "p25_h": -1.4,
+      "p75_h": 3.2,
+      "ic90_mediana_h": [
+       -1.4,
+       3.2
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 1.8,
+    "confianca": "media",
+    "por_que_nao": null,
+    "theil_sen_h_por_m": -0.18,
+    "cristas_simultaneas": 3
+   }
+  },
+  {
+   "rio": "itajai-acu",
+   "de": "ilhota",
+   "para": "itajai-dc11",
+   "de_nome": "Ilhota (DCSC-00030)",
+   "para_nome": "Itajaí DC-11 Volta de Cima",
+   "jica_h": [
+    7,
+    10
+   ],
+   "eventos": [
+    {
+     "crista_montante": "2026-07-20T20:10",
+     "pico_montante_m": 9.28,
+     "amplitude_montante_m": 0.52,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-21T21:10",
+     "pico_montante_m": 9.14,
+     "amplitude_montante_m": 0.35,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-23T07:00",
+     "pico_montante_m": 9.91,
+     "amplitude_montante_m": 0.9,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-30T07:55",
+     "pico_montante_m": 9.3,
+     "amplitude_montante_m": 0.42,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-05T19:40",
+     "pico_montante_m": 9.13,
+     "amplitude_montante_m": 0.5,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-07T09:35",
+     "pico_montante_m": 9.17,
+     "amplitude_montante_m": 0.38,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-08T10:30",
+     "pico_montante_m": 9.51,
+     "amplitude_montante_m": 0.45,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-11T15:25",
+     "pico_montante_m": 9.55,
+     "amplitude_montante_m": 0.49,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-12T16:00",
+     "pico_montante_m": 9.53,
+     "amplitude_montante_m": 0.37,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-13T16:15",
+     "pico_montante_m": 9.6,
+     "amplitude_montante_m": 0.4,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-15T20:30",
+     "pico_montante_m": 10.25,
+     "amplitude_montante_m": 1.2,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-19T08:05",
+     "pico_montante_m": 9.47,
+     "amplitude_montante_m": 0.42,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-25T11:45",
+     "pico_montante_m": 9.37,
+     "amplitude_montante_m": 0.35,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-27T15:50",
+     "pico_montante_m": 8.97,
+     "amplitude_montante_m": 0.38,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-28T15:55",
+     "pico_montante_m": 9.01,
+     "amplitude_montante_m": 0.42,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-29T16:55",
+     "pico_montante_m": 9.39,
+     "amplitude_montante_m": 0.54,
+     "crista_jusante": "2026-08-30T16:10",
+     "lags_h": {
+      "crista": 23.2,
+      "meia_subida": null,
+      "centroide": 24.6,
+      "xcorr": null,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-09-01T11:10",
+     "pico_montante_m": 11.61,
+     "amplitude_montante_m": 2.29,
+     "crista_jusante": "2026-09-01T10:40",
+     "lags_h": {
+      "crista": -0.5,
+      "meia_subida": -0.6,
+      "centroide": 0.4,
+      "xcorr": -0.4,
+      "dtw": 0.3
+     }
+    },
+    {
+     "crista_montante": "2026-09-06T19:05",
+     "pico_montante_m": 9.76,
+     "amplitude_montante_m": 0.44,
+     "crista_jusante": "2026-09-06T17:20",
+     "lags_h": {
+      "crista": -1.8,
+      "meia_subida": -0.5,
+      "centroide": 1.4,
+      "xcorr": -0.5,
+      "dtw": -0.5
+     }
+    },
+    {
+     "crista_montante": "2026-09-10T22:20",
+     "pico_montante_m": 9.98,
+     "amplitude_montante_m": 0.56,
+     "crista_jusante": "2026-09-12T08:20",
+     "lags_h": {
+      "crista": 34.0,
+      "meia_subida": 31.4,
+      "centroide": null,
+      "xcorr": -0.5,
+      "dtw": 17.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-12T08:55",
+     "pico_montante_m": 11.83,
+     "amplitude_montante_m": 2.3,
+     "crista_jusante": "2026-09-12T08:20",
+     "lags_h": {
+      "crista": -0.6,
+      "meia_subida": 0.2,
+      "centroide": null,
+      "xcorr": -0.5,
+      "dtw": 1.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-21T02:35",
+     "pico_montante_m": 9.8,
+     "amplitude_montante_m": 0.48,
+     "crista_jusante": "2026-09-21T02:50",
+     "lags_h": {
+      "crista": 0.2,
+      "meia_subida": -6.5,
+      "centroide": 0.5,
+      "xcorr": -0.5,
+      "dtw": -0.5
+     }
+    },
+    {
+     "crista_montante": "2026-09-22T19:05",
+     "pico_montante_m": 11.06,
+     "amplitude_montante_m": 1.82,
+     "crista_jusante": "2026-09-22T17:30",
+     "lags_h": {
+      "crista": -1.6,
+      "meia_subida": 0.2,
+      "centroide": 1.2,
+      "xcorr": -0.5,
+      "dtw": -0.5
+     }
+    },
+    {
+     "crista_montante": "2026-09-28T03:30",
+     "pico_montante_m": 9.66,
+     "amplitude_montante_m": 0.36,
+     "crista_jusante": "2026-09-28T03:00",
+     "lags_h": {
+      "crista": -0.5,
+      "meia_subida": -4.6,
+      "centroide": -0.2,
+      "xcorr": -0.4,
+      "dtw": -0.7
+     }
+    },
+    {
+     "crista_montante": "2026-09-28T22:30",
+     "pico_montante_m": 9.67,
+     "amplitude_montante_m": 0.41,
+     "crista_jusante": "2026-09-29T03:50",
+     "lags_h": {
+      "crista": 5.3,
+      "meia_subida": 53.2,
+      "centroide": 3.9,
+      "xcorr": -0.4,
+      "dtw": -0.4
+     }
+    },
+    {
+     "crista_montante": "2026-10-01T23:25",
+     "pico_montante_m": 10.16,
+     "amplitude_montante_m": 0.89,
+     "crista_jusante": "2026-10-01T22:00",
+     "lags_h": {
+      "crista": -1.4,
+      "meia_subida": -3.5,
+      "centroide": 0.6,
+      "xcorr": -0.5,
+      "dtw": -0.2
+     }
+    },
+    {
+     "crista_montante": "2026-10-07T08:35",
+     "pico_montante_m": 10.4,
+     "amplitude_montante_m": 0.94,
+     "crista_jusante": "2026-10-07T08:15",
+     "lags_h": {
+      "crista": -0.3,
+      "meia_subida": 0.8,
+      "centroide": null,
+      "xcorr": -0.5,
+      "dtw": -0.5
+     }
+    },
+    {
+     "crista_montante": "2026-10-17T23:50",
+     "pico_montante_m": 9.63,
+     "amplitude_montante_m": 0.73,
+     "crista_jusante": "2026-10-18T09:50",
+     "lags_h": {
+      "crista": 10.0,
+      "meia_subida": -0.2,
+      "centroide": 3.1,
+      "xcorr": -0.4,
+      "dtw": -2.8
+     }
+    },
+    {
+     "crista_montante": "2026-10-22T00:15",
+     "pico_montante_m": 10.6,
+     "amplitude_montante_m": 1.7,
+     "crista_jusante": "2026-10-23T11:10",
+     "lags_h": {
+      "crista": 34.9,
+      "meia_subida": null,
+      "centroide": 34.1,
+      "xcorr": null,
+      "dtw": -9.5
+     }
+    },
+    {
+     "crista_montante": "2026-10-22T23:45",
+     "pico_montante_m": 9.31,
+     "amplitude_montante_m": 0.4,
+     "crista_jusante": "2026-10-23T11:10",
+     "lags_h": {
+      "crista": 11.4,
+      "meia_subida": 8.5,
+      "centroide": 9.9,
+      "xcorr": null,
+      "dtw": -1.3
+     }
+    },
+    {
+     "crista_montante": "2026-10-24T01:20",
+     "pico_montante_m": 9.47,
+     "amplitude_montante_m": 0.46,
+     "crista_jusante": "2026-10-25T13:20",
+     "lags_h": {
+      "crista": 36.0,
+      "meia_subida": 38.3,
+      "centroide": 46.4,
+      "xcorr": -0.5,
+      "dtw": 24.5
+     }
+    },
+    {
+     "crista_montante": "2026-10-25T02:50",
+     "pico_montante_m": 9.8,
+     "amplitude_montante_m": 0.35,
+     "crista_jusante": "2026-10-25T13:20",
+     "lags_h": {
+      "crista": 10.5,
+      "meia_subida": -0.4,
+      "centroide": 21.3,
+      "xcorr": -0.5,
+      "dtw": 0.0
+     }
+    },
+    {
+     "crista_montante": "2026-10-26T05:05",
+     "pico_montante_m": 11.04,
+     "amplitude_montante_m": 2.01,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-28T04:30",
+     "pico_montante_m": 9.59,
+     "amplitude_montante_m": 0.3,
+     "crista_jusante": "2026-10-29T05:05",
+     "lags_h": {
+      "crista": 24.6,
+      "meia_subida": 23.8,
+      "centroide": 24.8,
+      "xcorr": null,
+      "dtw": 13.6
+     }
+    },
+    {
+     "crista_montante": "2026-10-29T05:10",
+     "pico_montante_m": 9.44,
+     "amplitude_montante_m": 0.35,
+     "crista_jusante": "2026-10-29T05:05",
+     "lags_h": {
+      "crista": -0.1,
+      "meia_subida": -1.4,
+      "centroide": 0.0,
+      "xcorr": -0.4,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-10-30T05:50",
+     "pico_montante_m": 9.53,
+     "amplitude_montante_m": 0.49,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-31T13:05",
+     "pico_montante_m": 9.47,
+     "amplitude_montante_m": 0.34,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-01T13:55",
+     "pico_montante_m": 9.28,
+     "amplitude_montante_m": 0.36,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-03T10:30",
+     "pico_montante_m": 9.5,
+     "amplitude_montante_m": 0.35,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-05T08:20",
+     "pico_montante_m": 11.02,
+     "amplitude_montante_m": 1.29,
+     "crista_jusante": "2026-11-05T21:40",
+     "lags_h": {
+      "crista": 13.3,
+      "meia_subida": null,
+      "centroide": 13.7,
+      "xcorr": null,
+      "dtw": null
+     }
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 19,
+    "metodos": {
+     "crista": {
+      "n": 19,
+      "mediana_h": 5.3,
+      "p25_h": -0.5,
+      "p75_h": 18.3,
+      "ic90_mediana_h": [
+       -0.5,
+       13.3
+      ]
+     },
+     "meia_subida": {
+      "n": 16,
+      "mediana_h": -0.0,
+      "p25_h": -0.8,
+      "p75_h": 12.3,
+      "ic90_mediana_h": [
+       -0.6,
+       4.6
+      ]
+     },
+     "centroide": {
+      "n": 16,
+      "mediana_h": 3.5,
+      "p25_h": 0.6,
+      "p75_h": 22.1,
+      "ic90_mediana_h": [
+       0.9,
+       17.5
+      ]
+     },
+     "xcorr": {
+      "n": 14,
+      "mediana_h": -0.5,
+      "p25_h": -0.5,
+      "p75_h": -0.4,
+      "ic90_mediana_h": [
+       -0.5,
+       -0.4
+      ]
+     },
+     "dtw": {
+      "n": 16,
+      "mediana_h": -0.5,
+      "p25_h": -0.5,
+      "p75_h": 0.7,
+      "ic90_mediana_h": [
+       -0.5,
+       0.2
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 5.8,
+    "confianca": "insuficiente",
+    "por_que_nao": "os eventos discordam: p25–p75 de 18.8 h; os métodos discordam em 5.8 h",
+    "theil_sen_h_por_m": -1.31,
+    "cristas_simultaneas": 6
+   }
+  },
+  {
+   "rio": "itajai-acu",
+   "de": "blumenau",
+   "para": "itajai-dc11",
+   "de_nome": "Blumenau (PADKND + AlertaBlu)",
+   "para_nome": "Itajaí DC-11 Volta de Cima",
+   "jica_h": [
+    12,
+    17
+   ],
+   "eventos": [
+    {
+     "crista_montante": "2026-09-01T10:30",
+     "pico_montante_m": 7.57,
+     "amplitude_montante_m": 4.17,
+     "crista_jusante": "2026-09-01T10:40",
+     "lags_h": {
+      "crista": 0.2,
+      "meia_subida": null,
+      "centroide": -1.7,
+      "xcorr": null,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-09-10T18:30",
+     "pico_montante_m": 4.26,
+     "amplitude_montante_m": 1.1,
+     "crista_jusante": "2026-09-10T17:45",
+     "lags_h": {
+      "crista": -0.8,
+      "meia_subida": 2.6,
+      "centroide": 0.1,
+      "xcorr": null,
+      "dtw": -0.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-12T05:20",
+     "pico_montante_m": 7.86,
+     "amplitude_montante_m": 4.3,
+     "crista_jusante": "2026-09-12T08:20",
+     "lags_h": {
+      "crista": 3.0,
+      "meia_subida": 2.2,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": 3.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T21:45",
+     "pico_montante_m": 4.29,
+     "amplitude_montante_m": 0.94,
+     "crista_jusante": "2026-09-21T02:50",
+     "lags_h": {
+      "crista": 5.1,
+      "meia_subida": -3.5,
+      "centroide": 3.2,
+      "xcorr": null,
+      "dtw": 3.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-22T11:50",
+     "pico_montante_m": 6.62,
+     "amplitude_montante_m": 3.08,
+     "crista_jusante": "2026-09-22T17:30",
+     "lags_h": {
+      "crista": 5.7,
+      "meia_subida": 1.2,
+      "centroide": 6.1,
+      "xcorr": null,
+      "dtw": 7.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-29T06:05",
+     "pico_montante_m": 3.87,
+     "amplitude_montante_m": 0.7,
+     "crista_jusante": "2026-09-29T03:50",
+     "lags_h": {
+      "crista": -2.2,
+      "meia_subida": -6.2,
+      "centroide": 0.3,
+      "xcorr": null,
+      "dtw": -5.1
+     }
+    },
+    {
+     "crista_montante": "2026-10-01T19:15",
+     "pico_montante_m": 4.53,
+     "amplitude_montante_m": 1.03,
+     "crista_jusante": "2026-10-01T22:00",
+     "lags_h": {
+      "crista": 2.8,
+      "meia_subida": -3.5,
+      "centroide": 3.6,
+      "xcorr": null,
+      "dtw": 4.4
+     }
+    },
+    {
+     "crista_montante": "2026-10-07T07:55",
+     "pico_montante_m": 5.04,
+     "amplitude_montante_m": 1.6,
+     "crista_jusante": "2026-10-07T08:15",
+     "lags_h": {
+      "crista": 0.3,
+      "meia_subida": 5.2,
+      "centroide": null,
+      "xcorr": 3.7,
+      "dtw": -6.8
+     }
+    },
+    {
+     "crista_montante": "2026-10-16T20:10",
+     "pico_montante_m": 3.18,
+     "amplitude_montante_m": 1.02,
+     "crista_jusante": "2026-10-17T06:55",
+     "lags_h": {
+      "crista": 10.8,
+      "meia_subida": 7.7,
+      "centroide": 3.9,
+      "xcorr": null,
+      "dtw": 3.3
+     }
+    },
+    {
+     "crista_montante": "2026-10-26T05:05",
+     "pico_montante_m": 2.92,
+     "amplitude_montante_m": 1.29,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-05T21:30",
+     "pico_montante_m": 4.91,
+     "amplitude_montante_m": 1.43,
+     "crista_jusante": "2026-11-05T21:40",
+     "lags_h": {
+      "crista": 0.2,
+      "meia_subida": null,
+      "centroide": -1.6,
+      "xcorr": null,
+      "dtw": null
+     }
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 10,
+    "metodos": {
+     "crista": {
+      "n": 10,
+      "mediana_h": 1.5,
+      "p25_h": 0.2,
+      "p75_h": 4.6,
+      "ic90_mediana_h": [
+       0.2,
+       5.1
+      ]
+     },
+     "meia_subida": {
+      "n": 8,
+      "mediana_h": 1.7,
+      "p25_h": -3.5,
+      "p75_h": 3.3,
+      "ic90_mediana_h": [
+       -3.5,
+       3.9
+      ]
+     },
+     "centroide": {
+      "n": 8,
+      "mediana_h": 1.8,
+      "p25_h": -0.4,
+      "p75_h": 3.7,
+      "ic90_mediana_h": [
+       -0.8,
+       3.7
+      ]
+     },
+     "xcorr": {
+      "n": 1,
+      "mediana_h": 3.7,
+      "p25_h": 3.7,
+      "p75_h": 3.7,
+      "ic90_mediana_h": null
+     },
+     "dtw": {
+      "n": 8,
+      "mediana_h": 3.6,
+      "p25_h": -1.4,
+      "p75_h": 4.0,
+      "ic90_mediana_h": [
+       -2.6,
+       4.1
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 2.1,
+    "confianca": "media",
+    "por_que_nao": null,
+    "theil_sen_h_por_m": 0.27,
+    "cristas_simultaneas": 4
+   }
+  },
+  {
+   "rio": "itajai-acu",
+   "de": "blumenau",
+   "para": "itajai-dc02",
+   "de_nome": "Blumenau (PADKND + AlertaBlu)",
+   "para_nome": "Itajaí DC-02 Praça Celso Pereira",
+   "jica_h": [
+    12,
+    17
+   ],
+   "eventos": [
+    {
+     "crista_montante": "2026-09-01T10:30",
+     "pico_montante_m": 7.57,
+     "amplitude_montante_m": 4.17,
+     "crista_jusante": "2026-09-01T17:20",
+     "lags_h": {
+      "crista": 6.8,
+      "meia_subida": null,
+      "centroide": 2.5,
+      "xcorr": null,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-09-10T18:30",
+     "pico_montante_m": 4.26,
+     "amplitude_montante_m": 1.1,
+     "crista_jusante": "2026-09-12T03:20",
+     "lags_h": {
+      "crista": 32.8,
+      "meia_subida": 27.0,
+      "centroide": null,
+      "xcorr": -3.1,
+      "dtw": 31.6
+     }
+    },
+    {
+     "crista_montante": "2026-09-12T05:20",
+     "pico_montante_m": 7.86,
+     "amplitude_montante_m": 4.3,
+     "crista_jusante": "2026-09-12T03:20",
+     "lags_h": {
+      "crista": -2.0,
+      "meia_subida": -4.8,
+      "centroide": null,
+      "xcorr": -3.7,
+      "dtw": -2.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T21:45",
+     "pico_montante_m": 4.29,
+     "amplitude_montante_m": 0.94,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-22T11:50",
+     "pico_montante_m": 6.62,
+     "amplitude_montante_m": 3.08,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-29T06:05",
+     "pico_montante_m": 3.87,
+     "amplitude_montante_m": 0.7,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-01T19:15",
+     "pico_montante_m": 4.53,
+     "amplitude_montante_m": 1.03,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-07T07:55",
+     "pico_montante_m": 5.04,
+     "amplitude_montante_m": 1.6,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-16T20:10",
+     "pico_montante_m": 3.18,
+     "amplitude_montante_m": 1.02,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-26T05:05",
+     "pico_montante_m": 2.92,
+     "amplitude_montante_m": 1.29,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-11-05T21:30",
+     "pico_montante_m": 4.91,
+     "amplitude_montante_m": 1.43,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 3,
+    "metodos": {
+     "crista": {
+      "n": 3,
+      "mediana_h": 6.8,
+      "p25_h": 2.4,
+      "p75_h": 19.8,
+      "ic90_mediana_h": [
+       -2.0,
+       32.8
+      ]
+     },
+     "meia_subida": {
+      "n": 2,
+      "mediana_h": 11.1,
+      "p25_h": 3.2,
+      "p75_h": 19.1,
+      "ic90_mediana_h": null
+     },
+     "centroide": {
+      "n": 1,
+      "mediana_h": 2.5,
+      "p25_h": 2.5,
+      "p75_h": 2.5,
+      "ic90_mediana_h": null
+     },
+     "xcorr": {
+      "n": 2,
+      "mediana_h": -3.4,
+      "p25_h": -3.6,
+      "p75_h": -3.2,
+      "ic90_mediana_h": null
+     },
+     "dtw": {
+      "n": 2,
+      "mediana_h": 14.7,
+      "p25_h": 6.3,
+      "p75_h": 23.1,
+      "ic90_mediana_h": null
+     }
+    },
+    "espalhamento_entre_metodos_h": null,
+    "confianca": "insuficiente",
+    "por_que_nao": "os eventos discordam: p25–p75 de 17.4 h; só um método achou forma comparável nas duas réguas; sem segundo método, não há como conferir",
+    "theil_sen_h_por_m": null,
+    "cristas_simultaneas": 0
+   }
+  },
+  {
+   "rio": "itajai-mirim",
+   "de": "vidal-ramos",
+   "para": "botuvera",
+   "de_nome": "Vidal Ramos (DCSC-00024)",
+   "para_nome": "Botuverá (DCSC-00018)",
+   "jica_h": null,
+   "eventos": [
+    {
+     "crista_montante": "2026-07-22T07:35",
+     "pico_montante_m": 3.68,
+     "amplitude_montante_m": 1.24,
+     "crista_jusante": "2026-07-22T12:55",
+     "lags_h": {
+      "crista": 5.3,
+      "meia_subida": 6.8,
+      "centroide": 6.7,
+      "xcorr": 7.3,
+      "dtw": 6.3
+     }
+    },
+    {
+     "crista_montante": "2026-07-29T11:55",
+     "pico_montante_m": 3.1,
+     "amplitude_montante_m": 0.74,
+     "crista_jusante": "2026-07-29T19:05",
+     "lags_h": {
+      "crista": 7.2,
+      "meia_subida": 7.7,
+      "centroide": 8.8,
+      "xcorr": 7.3,
+      "dtw": 8.8
+     }
+    },
+    {
+     "crista_montante": "2026-08-07T05:00",
+     "pico_montante_m": 3.0,
+     "amplitude_montante_m": 0.54,
+     "crista_jusante": "2026-08-07T12:50",
+     "lags_h": {
+      "crista": 7.8,
+      "meia_subida": 9.7,
+      "centroide": 8.7,
+      "xcorr": 18.9,
+      "dtw": 8.6
+     }
+    },
+    {
+     "crista_montante": "2026-08-13T23:50",
+     "pico_montante_m": 3.42,
+     "amplitude_montante_m": 0.78,
+     "crista_jusante": "2026-08-14T04:50",
+     "lags_h": {
+      "crista": 5.0,
+      "meia_subida": 34.8,
+      "centroide": 5.5,
+      "xcorr": 5.5,
+      "dtw": 5.2
+     }
+    },
+    {
+     "crista_montante": "2026-08-29T11:35",
+     "pico_montante_m": 3.53,
+     "amplitude_montante_m": 1.0,
+     "crista_jusante": "2026-08-29T17:35",
+     "lags_h": {
+      "crista": 6.0,
+      "meia_subida": 7.2,
+      "centroide": 6.9,
+      "xcorr": 7.0,
+      "dtw": 6.3
+     }
+    },
+    {
+     "crista_montante": "2026-08-31T22:35",
+     "pico_montante_m": 3.88,
+     "amplitude_montante_m": 1.34,
+     "crista_jusante": "2026-09-01T02:45",
+     "lags_h": {
+      "crista": 4.2,
+      "meia_subida": 53.5,
+      "centroide": 4.5,
+      "xcorr": 4.7,
+      "dtw": 2.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-10T05:10",
+     "pico_montante_m": 3.0,
+     "amplitude_montante_m": 0.53,
+     "crista_jusante": "2026-09-10T11:40",
+     "lags_h": {
+      "crista": 6.5,
+      "meia_subida": 6.7,
+      "centroide": 6.8,
+      "xcorr": 6.4,
+      "dtw": 6.5
+     }
+    },
+    {
+     "crista_montante": "2026-09-11T15:05",
+     "pico_montante_m": 3.38,
+     "amplitude_montante_m": 0.92,
+     "crista_jusante": "2026-09-11T19:20",
+     "lags_h": {
+      "crista": 4.2,
+      "meia_subida": 33.9,
+      "centroide": 4.0,
+      "xcorr": 5.0,
+      "dtw": 4.1
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T07:50",
+     "pico_montante_m": 3.33,
+     "amplitude_montante_m": 0.82,
+     "crista_jusante": "2026-09-20T13:40",
+     "lags_h": {
+      "crista": 5.8,
+      "meia_subida": 5.4,
+      "centroide": 6.1,
+      "xcorr": 5.5,
+      "dtw": 5.9
+     }
+    },
+    {
+     "crista_montante": "2026-09-21T20:45",
+     "pico_montante_m": 3.81,
+     "amplitude_montante_m": 1.26,
+     "crista_jusante": "2026-09-22T01:55",
+     "lags_h": {
+      "crista": 5.2,
+      "meia_subida": 6.3,
+      "centroide": 5.9,
+      "xcorr": 5.3,
+      "dtw": 6.3
+     }
+    },
+    {
+     "crista_montante": "2026-09-29T14:30",
+     "pico_montante_m": 3.4,
+     "amplitude_montante_m": 0.81,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-30T23:50",
+     "pico_montante_m": 4.18,
+     "amplitude_montante_m": 1.58,
+     "crista_jusante": "2026-10-01T04:45",
+     "lags_h": {
+      "crista": 4.9,
+      "meia_subida": 37.4,
+      "centroide": 7.2,
+      "xcorr": 5.8,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-10-16T00:20",
+     "pico_montante_m": 2.99,
+     "amplitude_montante_m": 0.55,
+     "crista_jusante": "2026-10-16T08:05",
+     "lags_h": {
+      "crista": 7.8,
+      "meia_subida": 7.4,
+      "centroide": 7.6,
+      "xcorr": 7.7,
+      "dtw": 9.0
+     }
+    },
+    {
+     "crista_montante": "2026-11-04T15:00",
+     "pico_montante_m": 4.49,
+     "amplitude_montante_m": 1.97,
+     "crista_jusante": "2026-11-04T18:50",
+     "lags_h": {
+      "crista": 3.8,
+      "meia_subida": 2.4,
+      "centroide": 3.8,
+      "xcorr": 4.0,
+      "dtw": 3.2
+     }
+    },
+    {
+     "crista_montante": "2026-11-07T13:20",
+     "pico_montante_m": 4.56,
+     "amplitude_montante_m": 1.33,
+     "crista_jusante": "2026-11-07T17:30",
+     "lags_h": {
+      "crista": 4.2,
+      "meia_subida": 4.5,
+      "centroide": 2.8,
+      "xcorr": 4.3,
+      "dtw": null
+     }
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 14,
+    "metodos": {
+     "crista": {
+      "n": 14,
+      "mediana_h": 5.2,
+      "p25_h": 4.4,
+      "p75_h": 6.4,
+      "ic90_mediana_h": [
+       4.6,
+       6.2
+      ]
+     },
+     "meia_subida": {
+      "n": 14,
+      "mediana_h": 7.3,
+      "p25_h": 6.4,
+      "p75_h": 27.8,
+      "ic90_mediana_h": [
+       6.5,
+       21.8
+      ]
+     },
+     "centroide": {
+      "n": 14,
+      "mediana_h": 6.4,
+      "p25_h": 4.7,
+      "p75_h": 7.1,
+      "ic90_mediana_h": [
+       5.0,
+       7.1
+      ]
+     },
+     "xcorr": {
+      "n": 14,
+      "mediana_h": 5.7,
+      "p25_h": 5.1,
+      "p75_h": 7.3,
+      "ic90_mediana_h": [
+       5.2,
+       7.2
+      ]
+     },
+     "dtw": {
+      "n": 12,
+      "mediana_h": 6.3,
+      "p25_h": 4.9,
+      "p75_h": 7.0,
+      "ic90_mediana_h": [
+       5.0,
+       6.5
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 2.1,
+    "confianca": "media",
+    "por_que_nao": null,
+    "theil_sen_h_por_m": -2.78,
+    "cristas_simultaneas": 0
+   }
+  },
+  {
+   "rio": "itajai-mirim",
+   "de": "botuvera",
+   "para": "brusque",
+   "de_nome": "Botuverá (DCSC-00018)",
+   "para_nome": "Brusque (DCSC-00019)",
+   "jica_h": null,
+   "eventos": [
+    {
+     "crista_montante": "2026-07-22T12:55",
+     "pico_montante_m": 4.82,
+     "amplitude_montante_m": 2.12,
+     "crista_jusante": "2026-07-22T20:20",
+     "lags_h": {
+      "crista": 7.4,
+      "meia_subida": 6.4,
+      "centroide": 7.2,
+      "xcorr": 6.3,
+      "dtw": 7.7
+     }
+    },
+    {
+     "crista_montante": "2026-07-29T19:05",
+     "pico_montante_m": 3.66,
+     "amplitude_montante_m": 1.04,
+     "crista_jusante": "2026-07-30T03:50",
+     "lags_h": {
+      "crista": 8.8,
+      "meia_subida": -23.1,
+      "centroide": 8.2,
+      "xcorr": 7.7,
+      "dtw": 9.0
+     }
+    },
+    {
+     "crista_montante": "2026-08-06T03:15",
+     "pico_montante_m": 3.18,
+     "amplitude_montante_m": 0.51,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-07T12:50",
+     "pico_montante_m": 3.36,
+     "amplitude_montante_m": 0.6,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-09T04:20",
+     "pico_montante_m": 3.41,
+     "amplitude_montante_m": 0.66,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-14T04:50",
+     "pico_montante_m": 4.96,
+     "amplitude_montante_m": 1.69,
+     "crista_jusante": "2026-08-14T12:00",
+     "lags_h": {
+      "crista": 7.2,
+      "meia_subida": 6.1,
+      "centroide": 7.1,
+      "xcorr": 6.7,
+      "dtw": 7.5
+     }
+    },
+    {
+     "crista_montante": "2026-08-15T08:30",
+     "pico_montante_m": 4.27,
+     "amplitude_montante_m": 0.74,
+     "crista_jusante": "2026-08-15T15:05",
+     "lags_h": {
+      "crista": 6.6,
+      "meia_subida": 5.8,
+      "centroide": 6.2,
+      "xcorr": 6.5,
+      "dtw": 6.5
+     }
+    },
+    {
+     "crista_montante": "2026-08-29T17:35",
+     "pico_montante_m": 4.08,
+     "amplitude_montante_m": 1.19,
+     "crista_jusante": "2026-08-30T02:30",
+     "lags_h": {
+      "crista": 8.9,
+      "meia_subida": 7.9,
+      "centroide": 8.2,
+      "xcorr": 7.3,
+      "dtw": 8.3
+     }
+    },
+    {
+     "crista_montante": "2026-09-01T02:45",
+     "pico_montante_m": 5.76,
+     "amplitude_montante_m": 2.75,
+     "crista_jusante": "2026-09-01T09:40",
+     "lags_h": {
+      "crista": 6.9,
+      "meia_subida": -3.5,
+      "centroide": 4.6,
+      "xcorr": 7.0,
+      "dtw": 3.1
+     }
+    },
+    {
+     "crista_montante": "2026-09-10T11:40",
+     "pico_montante_m": 3.81,
+     "amplitude_montante_m": 0.84,
+     "crista_jusante": "2026-09-10T06:40",
+     "lags_h": {
+      "crista": -5.0,
+      "meia_subida": -5.8,
+      "centroide": -5.5,
+      "xcorr": -5.4,
+      "dtw": 4.5
+     }
+    },
+    {
+     "crista_montante": "2026-09-11T19:20",
+     "pico_montante_m": 5.44,
+     "amplitude_montante_m": 2.4,
+     "crista_jusante": "2026-09-12T01:55",
+     "lags_h": {
+      "crista": 6.6,
+      "meia_subida": 1.6,
+      "centroide": 4.1,
+      "xcorr": 1.6,
+      "dtw": 6.3
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T13:40",
+     "pico_montante_m": 4.16,
+     "amplitude_montante_m": 1.03,
+     "crista_jusante": "2026-09-20T07:55",
+     "lags_h": {
+      "crista": -5.8,
+      "meia_subida": -6.0,
+      "centroide": -0.3,
+      "xcorr": -5.7,
+      "dtw": -2.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-22T01:55",
+     "pico_montante_m": 5.18,
+     "amplitude_montante_m": 2.1,
+     "crista_jusante": "2026-09-22T10:35",
+     "lags_h": {
+      "crista": 8.7,
+      "meia_subida": -6.1,
+      "centroide": 6.4,
+      "xcorr": 6.0,
+      "dtw": 7.3
+     }
+    },
+    {
+     "crista_montante": "2026-10-01T04:45",
+     "pico_montante_m": 5.38,
+     "amplitude_montante_m": 2.06,
+     "crista_jusante": "2026-10-01T12:00",
+     "lags_h": {
+      "crista": 7.2,
+      "meia_subida": -23.9,
+      "centroide": 7.0,
+      "xcorr": 5.7,
+      "dtw": null
+     }
+    },
+    {
+     "crista_montante": "2026-10-04T14:20",
+     "pico_montante_m": 3.84,
+     "amplitude_montante_m": 0.52,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-07T03:10",
+     "pico_montante_m": 3.85,
+     "amplitude_montante_m": 0.63,
+     "crista_jusante": "2026-10-06T22:25",
+     "lags_h": {
+      "crista": -4.8,
+      "meia_subida": 3.5,
+      "centroide": 1.5,
+      "xcorr": null,
+      "dtw": 1.2
+     }
+    },
+    {
+     "crista_montante": "2026-10-08T11:50",
+     "pico_montante_m": 3.39,
+     "amplitude_montante_m": 2.76,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-10-16T08:05",
+     "pico_montante_m": 4.02,
+     "amplitude_montante_m": 0.98,
+     "crista_jusante": "2026-10-16T20:25",
+     "lags_h": {
+      "crista": 12.3,
+      "meia_subida": 8.1,
+      "centroide": 10.8,
+      "xcorr": 11.0,
+      "dtw": 12.0
+     }
+    },
+    {
+     "crista_montante": "2026-11-04T18:50",
+     "pico_montante_m": 7.67,
+     "amplitude_montante_m": 4.27,
+     "crista_jusante": "2026-11-05T01:00",
+     "lags_h": {
+      "crista": 6.2,
+      "meia_subida": 3.0,
+      "centroide": 6.0,
+      "xcorr": 5.6,
+      "dtw": 5.7
+     }
+    },
+    {
+     "crista_montante": "2026-11-07T17:30",
+     "pico_montante_m": 6.59,
+     "amplitude_montante_m": 0.97,
+     "crista_jusante": "2026-11-07T20:45",
+     "lags_h": {
+      "crista": 3.2,
+      "meia_subida": -3.0,
+      "centroide": null,
+      "xcorr": -2.7,
+      "dtw": null
+     },
+     "obs": "a crista de baixo está na ponta da série (pode não ter passado)"
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 14,
+    "metodos": {
+     "crista": {
+      "n": 14,
+      "mediana_h": 7.0,
+      "p25_h": 6.3,
+      "p75_h": 8.4,
+      "ic90_mediana_h": [
+       6.4,
+       8.0
+      ]
+     },
+     "meia_subida": {
+      "n": 14,
+      "mediana_h": 2.3,
+      "p25_h": -6.0,
+      "p75_h": 6.0,
+      "ic90_mediana_h": [
+       -5.9,
+       6.0
+      ]
+     },
+     "centroide": {
+      "n": 14,
+      "mediana_h": 6.3,
+      "p25_h": 4.3,
+      "p75_h": 7.2,
+      "ic90_mediana_h": [
+       4.4,
+       7.2
+      ]
+     },
+     "xcorr": {
+      "n": 13,
+      "mediana_h": 6.3,
+      "p25_h": 5.6,
+      "p75_h": 7.0,
+      "ic90_mediana_h": [
+       5.6,
+       7.0
+      ]
+     },
+     "dtw": {
+      "n": 13,
+      "mediana_h": 6.5,
+      "p25_h": 4.5,
+      "p75_h": 7.7,
+      "ic90_mediana_h": [
+       4.5,
+       7.7
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 4.7,
+    "confianca": "insuficiente",
+    "por_que_nao": "os métodos discordam em 4.7 h",
+    "theil_sen_h_por_m": 0.0,
+    "cristas_simultaneas": 0
+   }
+  },
+  {
+   "rio": "itajai-mirim",
+   "de": "brusque",
+   "para": "itajai-dc10",
+   "de_nome": "Brusque (DCSC-00019)",
+   "para_nome": "Itajaí DC-10 Limoeiro",
+   "jica_h": null,
+   "eventos": [
+    {
+     "crista_montante": "2026-07-22T20:20",
+     "pico_montante_m": 3.2,
+     "amplitude_montante_m": 1.98,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-07-30T03:50",
+     "pico_montante_m": 1.87,
+     "amplitude_montante_m": 0.71,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-14T12:00",
+     "pico_montante_m": 3.4,
+     "amplitude_montante_m": 1.64,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-15T15:05",
+     "pico_montante_m": 2.96,
+     "amplitude_montante_m": 0.7,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-08-30T02:30",
+     "pico_montante_m": 2.12,
+     "amplitude_montante_m": 0.51,
+     "crista_jusante": null,
+     "lags_h": {
+      "crista": null,
+      "meia_subida": null,
+      "centroide": null,
+      "xcorr": null,
+      "dtw": null
+     },
+     "obs": "sem cheia correspondente lá embaixo na janela de −12 a +36 h"
+    },
+    {
+     "crista_montante": "2026-09-01T09:40",
+     "pico_montante_m": 4.88,
+     "amplitude_montante_m": 3.38,
+     "crista_jusante": "2026-09-01T11:10",
+     "lags_h": {
+      "crista": 1.5,
+      "meia_subida": -1.0,
+      "centroide": null,
+      "xcorr": 1.3,
+      "dtw": -2.0
+     }
+    },
+    {
+     "crista_montante": "2026-09-10T06:40",
+     "pico_montante_m": 2.19,
+     "amplitude_montante_m": 0.67,
+     "crista_jusante": "2026-09-10T07:40",
+     "lags_h": {
+      "crista": 1.0,
+      "meia_subida": -0.0,
+      "centroide": 1.1,
+      "xcorr": 0.8,
+      "dtw": 1.0
+     }
+    },
+    {
+     "crista_montante": "2026-09-12T01:55",
+     "pico_montante_m": 4.62,
+     "amplitude_montante_m": 3.09,
+     "crista_jusante": "2026-09-12T03:05",
+     "lags_h": {
+      "crista": 1.2,
+      "meia_subida": 0.5,
+      "centroide": null,
+      "xcorr": 0.8,
+      "dtw": 1.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-20T07:55",
+     "pico_montante_m": 2.97,
+     "amplitude_montante_m": 1.22,
+     "crista_jusante": "2026-09-20T09:05",
+     "lags_h": {
+      "crista": 1.2,
+      "meia_subida": -0.8,
+      "centroide": -2.0,
+      "xcorr": 1.2,
+      "dtw": 1.2
+     }
+    },
+    {
+     "crista_montante": "2026-09-22T10:35",
+     "pico_montante_m": 4.1,
+     "amplitude_montante_m": 2.49,
+     "crista_jusante": "2026-09-22T12:30",
+     "lags_h": {
+      "crista": 1.9,
+      "meia_subida": -1.4,
+      "centroide": 0.8,
+      "xcorr": 1.5,
+      "dtw": 1.8
+     }
+    },
+    {
+     "crista_montante": "2026-09-30T04:15",
+     "pico_montante_m": 2.72,
+     "amplitude_montante_m": 0.92,
+     "crista_jusante": "2026-10-01T13:55",
+     "lags_h": {
+      "crista": 33.7,
+      "meia_subida": 31.5,
+      "centroide": 35.2,
+      "xcorr": 1.5,
+      "dtw": 1.6
+     }
+    },
+    {
+     "crista_montante": "2026-10-01T12:00",
+     "pico_montante_m": 3.76,
+     "amplitude_montante_m": 2.09,
+     "crista_jusante": "2026-10-01T13:55",
+     "lags_h": {
+      "crista": 1.9,
+      "meia_subida": 29.6,
+      "centroide": 2.2,
+      "xcorr": 1.5,
+      "dtw": 3.0
+     }
+    },
+    {
+     "crista_montante": "2026-10-06T22:25",
+     "pico_montante_m": 2.45,
+     "amplitude_montante_m": 0.78,
+     "crista_jusante": "2026-10-07T00:55",
+     "lags_h": {
+      "crista": 2.5,
+      "meia_subida": -0.8,
+      "centroide": null,
+      "xcorr": 0.2,
+      "dtw": -0.2
+     }
+    },
+    {
+     "crista_montante": "2026-10-16T20:25",
+     "pico_montante_m": 2.87,
+     "amplitude_montante_m": 1.47,
+     "crista_jusante": "2026-10-16T22:55",
+     "lags_h": {
+      "crista": 2.5,
+      "meia_subida": 2.1,
+      "centroide": 2.3,
+      "xcorr": 1.5,
+      "dtw": 2.3
+     }
+    },
+    {
+     "crista_montante": "2026-10-26T02:25",
+     "pico_montante_m": 1.98,
+     "amplitude_montante_m": 0.66,
+     "crista_jusante": "2026-10-25T20:15",
+     "lags_h": {
+      "crista": -6.2,
+      "meia_subida": 2.3,
+      "centroide": 1.5,
+      "xcorr": 0.5,
+      "dtw": -0.9
+     }
+    },
+    {
+     "crista_montante": "2026-11-05T01:00",
+     "pico_montante_m": 6.88,
+     "amplitude_montante_m": 5.11,
+     "crista_jusante": "2026-11-05T21:40",
+     "lags_h": {
+      "crista": 20.7,
+      "meia_subida": null,
+      "centroide": 24.3,
+      "xcorr": null,
+      "dtw": null
+     }
+    }
+   ],
+   "resumo": {
+    "eventos_pareados": 11,
+    "metodos": {
+     "crista": {
+      "n": 11,
+      "mediana_h": 1.9,
+      "p25_h": 1.2,
+      "p75_h": 2.5,
+      "ic90_mediana_h": [
+       1.2,
+       2.5
+      ]
+     },
+     "meia_subida": {
+      "n": 10,
+      "mediana_h": 0.2,
+      "p25_h": -0.8,
+      "p75_h": 2.2,
+      "ic90_mediana_h": [
+       -0.8,
+       2.3
+      ]
+     },
+     "centroide": {
+      "n": 8,
+      "mediana_h": 1.8,
+      "p25_h": 1.0,
+      "p75_h": 7.8,
+      "ic90_mediana_h": [
+       1.0,
+       13.3
+      ]
+     },
+     "xcorr": {
+      "n": 10,
+      "mediana_h": 1.2,
+      "p25_h": 0.8,
+      "p75_h": 1.5,
+      "ic90_mediana_h": [
+       0.8,
+       1.5
+      ]
+     },
+     "dtw": {
+      "n": 10,
+      "mediana_h": 1.4,
+      "p25_h": 0.1,
+      "p75_h": 1.8,
+      "ic90_mediana_h": [
+       0.1,
+       1.8
+      ]
+     }
+    },
+    "espalhamento_entre_metodos_h": 1.7,
+    "confianca": "alta",
+    "por_que_nao": null,
+    "theil_sen_h_por_m": 0.5,
+    "cristas_simultaneas": 1
+   }
+  }
+ ]
+}

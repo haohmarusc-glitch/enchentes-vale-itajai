@@ -480,6 +480,13 @@ o projeto.
 
 ## Pendências
 
+- [x] **Medidor de descida (08/11/2026).** `scripts/medir_descida.py` mede o tempo entre as réguas nas cheias de 2026,
+  com cinco métodos e incerteza (bootstrap, Theil–Sen), maré tirada por análise harmônica. Relatório em
+  `docs/DESCIDA-MEDIDA.md`. Resultado de 08/11: Rio do Sul → Blumenau +6,6 h (JICA 7–10 h); Ascurra → Blumenau +5,4 h;
+  Brusque → DC-10 +1,9 h (alta); Vidal Ramos → Botuverá +5,2 h; no baixo vale, Itajaí e Ilhota crestam 1–4 h depois
+  de Blumenau (crista local, não a água de cima).
+  - [ ] Decidir (Jefferson) se o site mostra algum trecho medido ao lado da JICA. `transito.json` não mudou.
+  - [ ] Rodar de novo quando a cheia de 07–08/11 terminar (a maior de 2026) e quando houver Gaspar.
 - [x] **Brusque: escala da postagem da Defesa Civil adotada (07/11/2026, decisão do Jefferson).** Com a DCSC-00019 em 5,00 m o site pintava EMERGÊNCIA (legenda da estação 79: 3,00/5,00, sem alerta) enquanto o município publicava 5,26 m em **NÍVEL DE ALERTA: 4,51 a 7,50 m**. outra postagem do mesmo dia (4,45 m às 14:30) traz "NÍVEL DE ATENÇÃO: até 3,10m à 4,50m". `cotas_m` passa a 3,10/4,51/7,51; a escala antiga fica em `cotas_substituidas_em_2026_11_07` e a fonte anterior em `fonte_cotas_anterior`. Gabarito da classificação revisto (casos de alerta novos; emergência a 7,51 e 8,60 m) e testes do bot e do validador atualizados.
   - [ ] **Número de Brusque × DCSC-00019 em cheia:** 0 m a 1,27 m, +0,19 a +0,26 m entre 4,2 e 5,0 m (quatro pares de 07/11), +0,28 m a ~6 m, +0,33 m a ~9 m. A faixa do site pode virar depois da do município. Fecha lendo a régua oficial (o portal de Brusque não responde de fora do Brasil).
 - [x] **🔴 Rio do Sul: o painel da Asthon publicou 3,27 m "de agora" com o rio a ~7,5 m (04–07/11/2026).** A Ponte Dom Tito
