@@ -1,0 +1,91 @@
+{
+  "versao": 1,
+  "fonte": "Defesa Civil Nacional — IDAP (Interface de Divulgação de Alertas Públicos), feed CAP 1.2",
+  "fonte_url": "https://idapfile.mdr.gov.br/idap/api/rss/cap",
+  "gerado_em": "2026-11-14T10:49:01+00:00",
+  "feed_atualizado_em": "2026-11-14T10:45:05Z",
+  "alertas_no_feed": 60,
+  "aviso": "Alertas que as Defesas Civis mandaram à população de SC pela IDAP, como publicados, com emissor e hora. Não são faixa de rio, não disparam aviso de cota e não substituem o 199. O feed guarda só ~12 h; alerta que saiu dele fica aqui enquanto vale (`no_feed: false`). `cidades_do_projeto` só casa o nome do município do alerta com o de estacoes.json.",
+  "alertas": [
+    {
+      "identificador": "197913/2026",
+      "tipo_mensagem": "Alert",
+      "referencias": null,
+      "emissor": "Defesa Civil Estadual de Santa Catarina",
+      "evento": "TEMPESTADE LOCAL/CONVECTIVA - CHUVAS INTENSAS",
+      "severidade": "Moderate",
+      "urgencia": "Expected",
+      "certeza": "Observed",
+      "enviado_em": "2026-11-13T20:55:45",
+      "enviado_em_original": "2026-11-13T20:55:45-03:00",
+      "expira_em": "2026-11-13T22:55:00",
+      "expira_em_original": "2026-11-13T22:55:00-03:00",
+      "titulo": "OBSERVAÇÃO - 13/11 20:53 - TEMPORAIS ISOLADOS com RAIOS, RAJADAS DE VENTO e GRANIZO para os municípios de Bela Vista do Toldo, Canoinhas, Irineópolis, Mafra, Papanduva e Três Barras nas próximas 2 horas. Ocorrências ligue 199 ou 193.",
+      "descricao": "OBSERVAÇÃO - 13/11 20:53 - TEMPORAIS ISOLADOS com RAIOS, RAJADAS DE VENTO e GRANIZO para os municípios de Bela Vista do Toldo, Canoinhas, Irineópolis, Mafra, Papanduva e Três Barras nas próximas 2 horas. Ocorrências ligue 199 ou 193.",
+      "instrucao": "Siga as orientações da defesa civil local e do plano de contingência municipal. Em caso de emergência, ligue 199 ou 193.",
+      "area": "SANTA CATARINA/SC",
+      "area_declarada": "estado",
+      "municipios": [],
+      "cidades_do_projeto": [],
+      "no_feed": true,
+      "visto_primeiro_em": "2026-11-14T00:04:01+00:00"
+    },
+    {
+      "identificador": "197741/2026",
+      "tipo_mensagem": "Alert",
+      "referencias": null,
+      "emissor": "Defesa Civil Nacional",
+      "evento": "CHUVAS INTENSAS",
+      "severidade": "Moderate",
+      "urgencia": "Future",
+      "certeza": "Possible",
+      "enviado_em": "2026-11-13T11:55:24",
+      "enviado_em_original": "2026-11-13T11:55:24-03:00",
+      "expira_em": "2026-11-15T20:00:00",
+      "expira_em_original": "2026-11-15T20:00:00-03:00",
+      "titulo": "Observação Meteorológica DC/SC 13/11 10:50 -Temporais isolados com rajadas de vento e granizo ao longo do domingo (15). Ocorrências ligue 199 ou 193.",
+      "descricao": "Observação Meteorológica DC/SC 13/11 10:50 -Temporais isolados com rajadas de vento e granizo ao longo do domingo (15). Ocorrências ligue 199 ou 193.",
+      "instrucao": "Procure abrigo, evite áreas alagadas, redobre a atenção e siga as recomendações da Defesa Civil do seu município.",
+      "area": "SANTA CATARINA/SC, PARANÁ/PR",
+      "area_declarada": "municipios",
+      "municipios": [
+        {
+          "nome": "SANTA CATARINA",
+          "uf": "SC",
+          "ibge": null
+        },
+        {
+          "nome": "PARANÁ",
+          "uf": "PR",
+          "ibge": null
+        }
+      ],
+      "cidades_do_projeto": [],
+      "no_feed": false,
+      "visto_primeiro_em": "2026-11-13T15:04:01+00:00"
+    },
+    {
+      "identificador": "197736/2026",
+      "tipo_mensagem": "Alert",
+      "referencias": null,
+      "emissor": "Defesa Civil Estadual de Santa Catarina",
+      "evento": "CHUVAS INTENSAS",
+      "severidade": "Moderate",
+      "urgencia": "Expected",
+      "certeza": "Likely",
+      "enviado_em": "2026-11-13T11:15:34",
+      "enviado_em_original": "2026-11-13T11:15:34-03:00",
+      "expira_em": "2026-11-14T22:00:00",
+      "expira_em_original": "2026-11-14T22:00:00-03:00",
+      "titulo": "Observação Meteorológica DC/SC 13/11 10:50 - Temporais isolados entre a tarde e a noite do sábado (14). Ocorrências ligue 199 ou 193.",
+      "descricao": "Observação Meteorológica DC/SC 13/11 10:50 - Temporais isolados entre a tarde e a noite do sábado (14). Ocorrências ligue 199 ou 193.",
+      "instrucao": "Siga as orientações da defesa civil local e do plano de contingência municipal. Em caso de emergência, ligue 199 ou 193.",
+      "area": "SANTA CATARINA/SC",
+      "area_declarada": "estado",
+      "municipios": [],
+      "cidades_do_projeto": [],
+      "no_feed": false,
+      "visto_primeiro_em": "2026-11-13T14:19:01+00:00"
+    }
+  ]
+}
