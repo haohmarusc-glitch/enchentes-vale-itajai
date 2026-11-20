@@ -295,13 +295,46 @@ class TestBuscarFallback(unittest.TestCase):
             _, consulta = buscar()
         self.assertEqual(consulta, {"degrau": "sem_alarmes", "motivo": "rio_alarmes recusado: 400 Client Error"})
 
-    def test_propaga_erro_se_os_tres_falharem(self):
+    def test_propaga_erro_se_os_quatro_falharem(self):
         with unittest.mock.patch.object(coleta_nivel_sc.requests, "post",
                                          return_value=self._resposta(ok=False)) as m, \
                 unittest.mock.patch("sys.stderr"):
             with self.assertRaises(RuntimeError):
                 buscar()
-        self.assertEqual(m.call_count, 3)
+        self.assertEqual(m.call_count, 4)
+
+    def test_lista_fechada_cai_para_a_consulta_do_site_e_diz_por_que(self):
+        """Armadilha 11 (20/11/2026): a API só aceita o texto das consultas do site da DCSC."""
+        fechada = {"message": "Consulta não permitida. Use exatamente o texto das consultas do guia da API "
+                              "(docs/guia-da-api.md).", "extensions": {"code": "QUERY_NOT_ALLOWED"}}
+        with unittest.mock.patch.object(
+            coleta_nivel_sc.requests, "post",
+            side_effect=[self._resposta(ok=False, erro=fechada)] * 3 + [self._resposta(ok=True)],
+        ) as m, unittest.mock.patch("sys.stderr"):
+            est, consulta = buscar()
+        self.assertEqual(est, [{"codigo": "X"}])
+        self.assertEqual(m.call_args_list[3].kwargs["json"]["query"], coleta_nivel_sc.TAGS_DATA_DO_SITE)
+        self.assertEqual(consulta["degrau"], "site")
+        self.assertIn("Consulta não permitida", consulta["motivo"], "o motivo é a mensagem real da API")
+        self.assertIn("rio_alarmes", consulta["motivo"])
+
+    def test_recusa_em_http_400_leva_a_mensagem_da_api(self):
+        """A API devolve a recusa em HTTP 400 com `errors`: o motivo não pode virar só "400 Client Error"."""
+        r400 = unittest.mock.Mock(status_code=400)
+        r400.json = unittest.mock.Mock(return_value={"errors": [{"message": "Consulta não permitida."}]})
+        ok = self._resposta(ok=True)
+        ok.status_code = 200
+        with unittest.mock.patch.object(coleta_nivel_sc.requests, "post", side_effect=[r400, ok]), \
+                unittest.mock.patch("sys.stderr"):
+            _, consulta = buscar()
+        self.assertEqual(consulta, {"degrau": "sem_alarmes", "motivo": "rio_alarmes recusado: Consulta não permitida."})
+        r400.raise_for_status.assert_not_called()
+
+    def test_degrau_do_site_marca_a_faixa_estadual_indisponivel(self):
+        leituras, *_ = converter([estacao()], consulta={"degrau": "site", "motivo": "a API só aceitou …"})
+        cls = leituras[0]["classificacao_estadual"]
+        self.assertTrue(cls["indisponivel"])
+        self.assertIsNone(cls["faixa"])
 
 
 class TestClassificacaoIndisponivel(unittest.TestCase):
@@ -351,7 +384,7 @@ class TestClassificacaoIndisponivel(unittest.TestCase):
         self.assertEqual(coleta_nivel_sc.QUERY_CAMPOS_NOVOS.replace(
             "rio_alarmes { inundacao { ativo { value } status { value } "
             "atencao { value } alerta { value } emergencia { value } } } ", ""), coleta_nivel_sc.QUERY_SEM_ALARMES)
-        self.assertEqual([n for n, _ in coleta_nivel_sc.DEGRAUS], ["completa", "sem_alarmes", "original"])
+        self.assertEqual([n for n, _ in coleta_nivel_sc.DEGRAUS], ["completa", "sem_alarmes", "original", "site"])
 
     def test_o_arquivo_gravado_leva_a_consulta(self):
         with tempfile.TemporaryDirectory() as d, \

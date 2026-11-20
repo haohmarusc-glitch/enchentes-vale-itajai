@@ -48,10 +48,16 @@ ARMADILHAS que este coletor já trata (todas vistas em 01/09):
       que peça `data.rio.rio_alarmes.inundacao.*`; `type`, `rio_nome`, `rio_nivel` e `rio_area_drenagem`
       continuam liberados — testado campo a campo em 27/10). Com dois degraus, a recusa de UM campo
       derrubava a query inteira e `tipo_estacao`/`rio_nome` voltavam a None em todas as estações. Por isso
-      `buscar()` tem TRÊS degraus (completa → sem alarmes → original) e devolve também qual foi usado e por
+      `buscar()` tem TRÊS degraus (completa → sem alarmes → original; o quarto veio na armadilha 11) e devolve
+      também qual foi usado e por
       quê (`consulta`); fora do degrau completo, cada leitura sai com `classificacao_estadual` marcada
       `indisponivel`, com o motivo da recusa real — diferente de "estação sem faixas configuradas"
       (`ativo=false`), que é o que a DCSC publica. O motor e o site leem esse motivo.
+  11. A DCSC fechou a API numa lista de consultas (entre 17/11/2026 10h31 e 20/11: HTTP 400
+      `QUERY_NOT_ALLOWED`, "Use exatamente o texto das consultas do guia da API"). As três consultas acima
+      passaram a ser recusadas e o `ultimo_nivel_sc.json` parou — Brusque, Ascurra e Rio dos Cedros ficaram
+      cinza. O quarto degrau, `site`, é o texto exato da consulta do mapa deles (`consulta_dcsc_site.py`):
+      traz nível, `type` e `filter`, mas não `rio_alarmes`, então a faixa estadual sai `indisponivel`.
 
 Uso:
     python3 scripts/coleta_nivel_sc.py            # imprime + grava data/tempo-real/ultimo_nivel_sc.json
@@ -79,6 +85,7 @@ from cadastro_dcsc import (  # noqa: F401  (re-exportados: quem já importava da
     SUSPEITAS,
     e_suspeita,
 )
+from consulta_dcsc_site import TAGS_DATA_DO_SITE, corpo  # armadilha 11
 
 URL = "https://monitoramento.defesacivil.sc.gov.br/graphql"
 UA = "enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)"
@@ -127,11 +134,20 @@ QUERY_SEM_ALARMES = (
     'chuva { acumulado { h024 { value } h168 { value } } } } } } }'
 )
 
+#: Último degrau (20/11/2026, armadilha 11): o texto EXATO da consulta que o mapa da DCSC faz, copiado
+#: do arquivo JavaScript do site (`consulta_dcsc_site.py`). Desde ~17/11 a API só aceita consultas de uma
+#: lista fechada (`QUERY_NOT_ALLOWED`) e recusa as três de cima. Traz nível, `type`, `filter` e chuva;
+#: NÃO traz `rio_alarmes`, então a classificação estadual sai `indisponivel`.
+QUERY_DO_SITE = TAGS_DATA_DO_SITE
+
 #: Os degraus de `buscar()`, na ordem. O nome vai para `consulta.degrau` no `ultimo_nivel_sc.json`.
+#: Os três primeiros ficam na frente para voltarem sozinhos se a DCSC reabrir a API (a completa traz a
+#: faixa estadual); custam três respostas curtas de recusa por ciclo.
 DEGRAUS: tuple[tuple[str, str], ...] = (
     ("completa", QUERY_CAMPOS_NOVOS),
     ("sem_alarmes", QUERY_SEM_ALARMES),
     ("original", QUERY),
+    ("site", QUERY_DO_SITE),
 )
 
 #: As três flags que a Defesa Civil de SC publica em `rio_alarmes.inundacao`, na ordem; "normal"
@@ -259,10 +275,8 @@ def hora_local(carimbo: str | None) -> str | None:
 
 
 def _post(query: str) -> dict:
-    r = requests.post(URL, json={"operationName": "Tags_data", "query": query},
-                      headers={"User-Agent": UA}, timeout=60)
-    r.raise_for_status()
-    return r.json()
+    return corpo(requests.post(URL, json={"operationName": "Tags_data", "query": query},
+                               headers={"User-Agent": UA}, timeout=60))
 
 
 def _mensagem_da_recusa(e: Exception) -> str:
@@ -277,9 +291,10 @@ def _mensagem_da_recusa(e: Exception) -> str:
 
 def buscar() -> tuple[list[dict], dict]:
     """
-    Três degraus, nesta ordem, e a resposta real decide (armadilha 9): a completa (com `rio_alarmes`,
-    para voltar sozinha se a DCSC liberar), a mesma sem o bloco `rio_alarmes` (armadilha 10) e a
-    QUERY original de 01/09. Devolve (estações, consulta), com `consulta = {"degrau", "motivo"}`
+    Quatro degraus, nesta ordem, e a resposta real decide (armadilha 9): a completa (com `rio_alarmes`,
+    para voltar sozinha se a DCSC liberar), a mesma sem o bloco `rio_alarmes` (armadilha 10), a
+    QUERY original de 01/09 e, por último, o texto exato da consulta do site da DCSC (armadilha 11).
+    Devolve (estações, consulta), com `consulta = {"degrau", "motivo"}`
     dizendo qual degrau respondeu e, fora do completo, o que a API recusou — é isso que vai para o
     `ultimo_nivel_sc.json`, para o motor e o site não dizerem "a DCSC não publicou" quando o que
     houve foi recusa à nossa leitura.
@@ -300,6 +315,9 @@ def buscar() -> tuple[list[dict], dict]:
             motivo = f"rio_alarmes recusado: {recusas[0].split(': ', 1)[1]}"
         elif nome == "original":
             motivo = "campos novos recusados (" + "; ".join(recusas) + ")"
+        elif nome == "site":
+            motivo = ("a API só aceitou a consulta do próprio site da DCSC, que não traz rio_alarmes "
+                      f"(recusada: {recusas[0].split(': ', 1)[1]})")
         return j["data"]["tags_data"]["qualle_meteorologia"], {"degrau": nome, "motivo": motivo}
     raise RuntimeError("todos os degraus recusados: " + "; ".join(recusas))
 
