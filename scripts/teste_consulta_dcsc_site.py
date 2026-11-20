@@ -63,6 +63,20 @@ class Escada(unittest.TestCase):
         self.assertIn("timeout", str(ctx.exception))
 
 
+class Hora(unittest.TestCase):
+    def test_sem_fuso_e_brasilia(self):
+        """Conferido em 20/11/2026 22h57 UTC: a API marcava 19h55 sem fuso. Ler como UTC envelhece 3 h."""
+        self.assertEqual(c.hora_de_brasilia("2026-11-20T19:55:00.000"), "2026-11-20T19:55:00")
+
+    def test_com_offset_converte(self):
+        self.assertEqual(c.hora_de_brasilia("2026-11-17T13:31:05+00:00"), "2026-11-17T10:31:05")
+        self.assertEqual(c.hora_de_brasilia("2026-11-17T13:31:05Z"), "2026-11-17T10:31:05")
+
+    def test_ilegivel_nao_vira_hora(self):
+        for carimbo in (None, "", "ontem"):
+            self.assertIsNone(c.hora_de_brasilia(carimbo))
+
+
 class Corpo(unittest.TestCase):
     def test_400_com_errors_devolve_o_corpo(self):
         r = unittest.mock.Mock(status_code=400)

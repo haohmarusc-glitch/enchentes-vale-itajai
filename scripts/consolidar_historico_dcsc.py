@@ -81,8 +81,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analisar_telemetria_ana import buracos, crista  # noqa: E402
-from cadastro_dcsc import (CADEIA, NAO_MEDE_NIVEL, apos_a_quebra,  # noqa: E402
-                           e_reprocessada, mede_nivel, quando_da_quebra, quebra_de,
+from cadastro_dcsc import (CADEIA, NAO_MEDE_NIVEL, antes_de_medir, apos_a_quebra,  # noqa: E402
+                           e_reprocessada, mede_desde, mede_nivel, quando_da_quebra, quebra_de,
                            reprocessamento_de)
 from comum import DADOS  # noqa: E402
 
@@ -117,6 +117,8 @@ def nivel(item: dict, cod: str | None = None) -> float | None:
     if v < LIMITE_SENTINELA or v > LIMITE_PLAUSIVEL:
         return None
     if cod and apos_a_quebra(cod, quando(item)):
+        return None
+    if cod and antes_de_medir(cod, quando(item)):   # PASSOU_A_MEDIR_NIVEL: antes não era rio
         return None
     return v
 
@@ -290,7 +292,10 @@ def resumo_da_estacao(cod: str, e: dict) -> dict:
     # de mais e verdadeiro de menos. Quem conta o que foi cortado é o campo próprio disso,
     # `quebra_de_serie.leituras_de_nivel_cortadas`.
     corte = quando_da_quebra(cod)
-    serie_sadia = [(t, v) for t, v in serie if corte is None or t < corte]
+    # Mesma ideia para quem PASSOU a medir (Gaspar, 09/11/2026): os anos de antes não são buraco.
+    inicio = mede_desde(cod)
+    serie_sadia = [(t, v) for t, v in serie
+                   if (corte is None or t < corte) and (inicio is None or t >= inicio)]
     bur = [(a, b, tipo) for a, b, tipo in buracos(serie_sadia, BURACO_MINIMO)] if serie_sadia else []
     esperadas = int((serie[-1][0] - serie[0][0]) / CADENCIA) + 1 if len(serie) > 1 else len(serie)
     campos = Counter(k for it in e["itens"].values() for k in it if not k.startswith("_"))

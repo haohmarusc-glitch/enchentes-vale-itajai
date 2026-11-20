@@ -28,6 +28,7 @@ copia o texto novo do arquivo JavaScript atual — nunca se monta à mão.
 """
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
 
@@ -38,6 +39,34 @@ ORIGEM = "https://monitoramento.defesacivil.sc.gov.br/assets/U7pWP52Ug3.js"
 COPIADA_EM = "2026-11-20"
 
 TAGS_DATA_DO_SITE: str = ARQUIVO.read_text(encoding="utf-8")
+
+
+#: Hora de Brasília (sem horário de verão desde 2019).
+FUSO_BRASILIA = timezone(timedelta(hours=-3))
+
+
+def instante(carimbo: Any) -> datetime | None:
+    """O `timestamp` da DCSC como instante com fuso.
+
+    Até 17/11/2026 a API mandava UTC com offset (`…+00:00`). Desde a lista fechada, a consulta do site
+    devolve o carimbo SEM fuso (`2026-11-20T19:55:00.000`), e ele é hora de BRASÍLIA: conferido em
+    20/11/2026 às 22h57 UTC pelo cabeçalho `Date` do próprio servidor, com 170 estações marcando 19h55.
+    Ler o sem-fuso como UTC deixaria toda leitura três horas mais velha, e leitura velha não pinta.
+    Com offset, o offset manda; sem offset, Brasília.
+    """
+    if not carimbo:
+        return None
+    try:
+        t = datetime.fromisoformat(str(carimbo).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=FUSO_BRASILIA)
+
+
+def hora_de_brasilia(carimbo: Any) -> str | None:
+    """O carimbo da DCSC no formato do projeto: hora de Brasília sem fuso, em segundos."""
+    t = instante(carimbo)
+    return t.astimezone(FUSO_BRASILIA).replace(tzinfo=None).isoformat(timespec="seconds") if t else None
 
 
 class Recusada(RuntimeError):

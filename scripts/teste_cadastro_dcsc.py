@@ -43,9 +43,25 @@ class UmCadastroDoisLeitores(unittest.TestCase):
 
 class QuemEQuem(unittest.TestCase):
     def teste_estacao_que_nao_mede_nivel(self):
-        self.assertFalse(mede_nivel("DCSC-00005"))      # Gaspar
         self.assertFalse(mede_nivel("DCSC-00026"))      # Blumenau, type=Meteo
         self.assertTrue(mede_nivel("DCSC-00013"))       # Rio do Sul
+
+    def teste_gaspar_passou_a_medir_em_09_11_2026(self):
+        """Decisão do Jefferson, 20/11/2026: Gaspar conforme a declaração atual da API."""
+        from cadastro_dcsc import PASSOU_A_MEDIR_NIVEL, antes_de_medir
+        self.assertTrue(mede_nivel("DCSC-00005"))
+        self.assertNotIn("DCSC-00005", NAO_MEDE_NIVEL)
+        self.assertTrue(antes_de_medir("DCSC-00005", datetime(2026, 11, 9, 16, 50)))
+        self.assertFalse(antes_de_medir("DCSC-00005", datetime(2026, 11, 9, 17, 0)), "inclusivo")
+        self.assertFalse(antes_de_medir("DCSC-00005", None), "sem hora não corta")
+        self.assertFalse(antes_de_medir("DCSC-00013", datetime(2020, 1, 1)))
+        self.assertIn("DCSC-00005", CADEIA)
+        self.assertTrue(PASSOU_A_MEDIR_NIVEL["DCSC-00005"]["fonte"])
+
+    def teste_gaspar_nao_pinta_pelas_cotas_da_cidade(self):
+        """Medir nível não é estar na régua das cotas de Gaspar (5/6/7 m): isso exige prova à parte."""
+        from coleta_estadual_com_cota import REGUAS_COM_COTA_PROPRIA
+        self.assertNotIn("DCSC-00005", REGUAS_COM_COTA_PROPRIA)
 
     def teste_estacao_desconhecida_mede_ate_prova_em_contrario(self):
         """Ausência de cadastro não é acusação: estação nova não nasce descartada."""

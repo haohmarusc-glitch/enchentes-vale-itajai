@@ -125,16 +125,14 @@ def valor_de(caixa) -> float | None:
 
 
 def hora_local(carimbo: str | None) -> str | None:
-    """UTC do GraphQL -> hora de Brasília sem fuso, que é o formato do projeto."""
-    if not carimbo:
-        return None
-    try:
-        t = datetime.fromisoformat(carimbo.replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    if t.tzinfo is None:
-        t = t.replace(tzinfo=timezone.utc)
-    return t.astimezone(FUSO_BRASILIA).replace(tzinfo=None).isoformat(timespec="seconds")
+    """Carimbo do GraphQL -> hora de Brasília sem fuso, que é o formato do projeto.
+
+    Com offset (até 17/11/2026, UTC) converte; sem offset (consulta do site, desde 20/11/2026) já é
+    Brasília. A regra mora em `consulta_dcsc_site.instante`.
+    """
+    from consulta_dcsc_site import hora_de_brasilia
+
+    return hora_de_brasilia(carimbo)
 
 
 def converter(estacoes: list[dict]) -> tuple[list[dict], list[str]]:

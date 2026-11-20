@@ -48,6 +48,10 @@ class TestFuso(unittest.TestCase):
     def test_vira_o_dia_para_tras_quando_precisa(self):
         self.assertEqual(hora_local("2026-08-31T01:00:00+00:00"), "2026-08-30T22:00:00")
 
+    def test_sem_fuso_ja_e_brasilia(self):
+        """A consulta do site da DCSC (20/11/2026) manda o carimbo sem fuso, em hora de Brasília."""
+        self.assertEqual(hora_local("2026-11-20T19:55:00.000"), "2026-11-20T19:55:00")
+
     def test_aceita_o_z_no_lugar_do_offset(self):
         self.assertEqual(hora_local("2026-08-31T12:00:00Z"), "2026-08-31T09:00:00")
 
