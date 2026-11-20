@@ -56,7 +56,7 @@ import math
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from cadastro_dcsc import NAO_MEDE_NIVEL, SUSPEITAS, apos_a_quebra, quebra_de
+from cadastro_dcsc import NAO_MEDE_NIVEL, PASSOU_A_MEDIR_NIVEL, SUSPEITAS, antes_de_medir, apos_a_quebra, quebra_de
 from calibrar_transito import MIN_EVENTOS, pares_para_calibrar
 from comum import DADOS, grava_json, le_json
 
@@ -156,6 +156,8 @@ def ler_serie(codigo: str, origem: Path = SERIES) -> list[tuple[datetime, float]
                 continue
             if valor <= LIMITE_SENTINELA or abs(valor) > LIMITE_PLAUSIVEL:
                 continue
+            if antes_de_medir(codigo, quando):
+                continue                    # PASSOU_A_MEDIR_NIVEL: antes de `desde` não era rio
             if apos_a_quebra(codigo, quando):
                 # Defesa em profundidade: o consolidador já esvazia o nível depois da quebra ao
                 # gravar o CSV, mas um CSV gerado ANTES de 15/09/2026 ainda traz a grandeza nova
@@ -462,6 +464,10 @@ def aviso_do_cadastro(cod_montante: str, cod_jusante: str) -> str | None:
         if q:
             recados.append(f"{cod} ({papel}) tem quebra de série em {q['desde']}: só a parte "
                            "anterior entra na conta")
+        p = PASSOU_A_MEDIR_NIVEL.get(cod)
+        if p:
+            recados.append(f"{cod} ({papel}) só mede nível de rio desde {p['desde']}: só a parte "
+                           "posterior entra na conta")
     return "; ".join(recados) or None
 
 

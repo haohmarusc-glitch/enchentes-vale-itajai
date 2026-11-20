@@ -487,10 +487,14 @@ o projeto.
   não pinta). Correção: o texto exato da consulta do mapa da DCSC, copiado do JavaScript do site
   (`scripts/consulta_dcsc_site.py`), entra como último degrau no `coleta_nivel_sc.py` e como reserva na chuva e no
   `gaspar_estadual.py`; o `Historic` segue aceito. Essa consulta **não traz `rio_alarmes`**: a faixa estadual sai
-  `indisponivel` até haver consulta aceita que a traga. O "guia da API" não foi achado publicado. Efeito colateral a
-  decidir: ela traz `filter.tem_nivel_do_rio`, e a API declara **true para Gaspar (DCSC-00005)**, que o cadastro tem
-  como "não mede nível"; pela regra de 03/09 a declaração vence, e às 16h40 de 20/11 o número (2,06 m) era igual ao de
-  Rio dos Cedros na mesma hora. Leitura com `usar_para_cota: false`, não pinta.
+  `indisponivel` até haver consulta aceita que a traga. O "guia da API" não foi achado publicado. A mesma consulta
+  manda o carimbo **sem fuso, em hora de Brasília** (19h55 às 22h57 UTC, pelo `Date` do servidor); lido como UTC,
+  toda leitura sairia 3 h velha e continuaria cinza — `consulta_dcsc_site.instante` trata isso.
+  **Gaspar (DCSC-00005) passou a medir nível em 09/11/2026 17h00** (decisão do Jefferson, 20/11: "conforme
+  declaração atual"): a API declara `tem_nivel_do_rio=true` e a série `historic` só tem nível dali em diante, sem
+  nenhuma hora igual à de Rio dos Cedros. Saiu de `NAO_MEDE_NIVEL` para `PASSOU_A_MEDIR_NIVEL` (o histórico de antes
+  continua fora). Leitura bruta, `usar_para_cota: false`: **não pinta pelas cotas de Gaspar** (5/6/7 m, régua
+  municipal); ligar as duas exige prova da régua (`gaspar_estadual.usavel_para_aviso`).
 - [ ] **Avisos da Defesa Civil de SC: o site recusa conexão de fora do Brasil (08/11/2026).** A VPS (Helsinque) dá
   `ConnectTimeoutError` (07/11); o runner do GitHub dá timeout no `robots.txt` (run 42435172062, duas tentativas); a
   sessão de código toma `Connection reset`. Do Brasil, pelo celular do Jefferson, o site abre (08/11, 22:58). O caminho

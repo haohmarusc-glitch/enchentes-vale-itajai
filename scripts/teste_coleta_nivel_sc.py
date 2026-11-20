@@ -72,6 +72,11 @@ class TestFuso(unittest.TestCase):
         self.assertEqual(leituras[0]["medido_em"], "2026-09-01T20:42:54",
                          "medido_em é Brasília sem fuso, não o UTC cru do GraphQL")
 
+    def test_carimbo_sem_fuso_da_consulta_do_site_ja_e_brasilia(self):
+        """20/11/2026: a consulta do site manda `2026-11-20T19:55:00.000`, sem fuso, em hora de Brasília."""
+        leituras, _, _, _ = converter([estacao(carimbo="2026-11-20T19:55:00.000")])
+        self.assertEqual(leituras[0]["medido_em"], "2026-11-20T19:55:00")
+
     def test_carimbo_ilegivel_nao_vira_hora(self):
         self.assertIsNone(hora_local(None))
         self.assertIsNone(hora_local("ontem"))
@@ -93,15 +98,20 @@ class TestBaldes(unittest.TestCase):
         self.assertEqual(len(sem), 1)
         self.assertEqual(sem[0]["cidade"], "indaial")
 
-    def test_gaspar_vai_para_nao_mede_nivel_nao_para_sem_leitura(self):
-        """Gaspar: tem_nivel_do_rio=false na API (03/09/2026) — não é 'sensor mudo agora', é
-        ausência estrutural. Não deve mais cair em sem_leitura mesmo com value null."""
-        leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00005", nome="SDC-SC Gaspar", nivel=None)])
-        self.assertEqual(leituras, [])
-        self.assertEqual(sem, [])
-        self.assertEqual(len(nao_mede), 1)
-        self.assertEqual(nao_mede[0]["cidade"], "gaspar")
-        self.assertIn("tem_nivel_do_rio", nao_mede[0]["motivo"])
+    def test_gaspar_passou_a_medir_e_vira_leitura_bruta(self):
+        """Gaspar saiu de NAO_MEDE_NIVEL (decisão do Jefferson, 20/11/2026: a API declara nível desde
+        09/11). A leitura é bruta estadual, `usar_para_cota=False`: não pinta pelas cotas de Gaspar."""
+        leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00005", nome="SDC-SC Gaspar", nivel=2.06)])
+        self.assertEqual(nao_mede, [])
+        self.assertEqual(len(leituras), 1)
+        self.assertEqual(leituras[0]["cidade"], "gaspar")
+        self.assertFalse(leituras[0]["usar_para_cota"])
+
+    def test_gaspar_sem_numero_agora_e_sem_leitura(self):
+        """Depois de 09/11/2026, value null em Gaspar é sensor mudo agora, como em qualquer estação Hidro."""
+        _, sem, _, nao_mede = converter([estacao(codigo="DCSC-00005", nome="SDC-SC Gaspar", nivel=None)])
+        self.assertEqual(nao_mede, [])
+        self.assertEqual(len(sem), 1)
 
     def test_blumenau_vai_para_nao_mede_nivel(self):
         """Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não de rio."""
@@ -199,7 +209,7 @@ class TestCamposNovosDaAPI(unittest.TestCase):
 
     def test_sem_campos_novos_cai_no_dicionario_hardcoded(self):
         # Sem type/filter na resposta (QUERY original), o comportamento é o de sempre.
-        leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00005", nome="SDC-SC Gaspar", nivel=None)])
+        leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00026", nome="SDC-SC Blumenau", nivel=None)])
         self.assertEqual(len(nao_mede), 1)
         self.assertIsNone(nao_mede[0]["tipo_estacao"])
 

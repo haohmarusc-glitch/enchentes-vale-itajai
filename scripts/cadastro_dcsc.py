@@ -119,10 +119,29 @@ def e_suspeita(codigo: str, valor_m: float) -> bool:
 # cinco "cristas candidatas" que o resumo listava para ela eram uma leitura de 0,84 m e quatro
 # platôs de zero com 135 mil leituras. Blumenau, no mesmo endpoint, vem com campos de estação
 # meteorológica (vento, pressão, umidade) e ZERO leituras de nível — coerente com type=Meteo.
-NAO_MEDE_NIVEL = {"DCSC-00005": "Gaspar: tem_nivel_do_rio=false na API estadual — não mede nível de rio "
-                                 "nesta rede (cota de Gaspar vem da Defesa Civil municipal, não da DCSC)",
-                  "DCSC-00026": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, "
+NAO_MEDE_NIVEL = {"DCSC-00026": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, "
                                  "não mede nível de rio (cota de Blumenau vem do AlertaBlu, não da DCSC)"}
+
+#: Estações que NÃO mediam nível de rio e PASSARAM a medir, com o instante (Brasília, sem fuso,
+#: inclusivo). Antes de `desde`, a coluna de nível é cortada como numa quebra de série (não é rio);
+#: a partir de `desde`, vale como qualquer leitura bruta estadual (`usar_para_cota=False`).
+#:
+#: Gaspar (decisão do Jefferson, 20/11/2026: "Mude Gaspar conforme declaração atual"). Até então
+#: estava em NAO_MEDE_NIVEL. Em 20/11/2026 a API declara `type=Hidro` e `tem_nivel_do_rio=true`, e a
+#: série `historic` (HOUR_1, 24/08 a 20/11/2026) só traz `rio_nivel_arbitrario` a partir de
+#: 09/11/2026 17:00 — 267 horas, nenhuma igual à de Rio dos Cedros (DCSC-00011) na mesma hora.
+#: Isto NÃO liga o número às cotas de Gaspar (5/6/7 m, régua municipal): o portão continua em
+#: `gaspar_estadual.usavel_para_aviso`, e a estação não está em `REGUAS_COM_COTA_PROPRIA`.
+PASSOU_A_MEDIR_NIVEL = {
+    "DCSC-00005": {
+        "desde": "2026-11-09T17:00",
+        "antes": "Gaspar: tem_nivel_do_rio=false na API estadual — não media nível de rio nesta rede "
+                 "(no histórico, 0,84 m e platôs de zero que não são rio)",
+        "fonte": "API de monitoramento.defesacivil.sc.gov.br em 20/11/2026: Tags_data (consulta do site) "
+                 "com type=Hidro e filter.relacao.tem_nivel_do_rio=true; historic HOUR_1 de 24/08 a "
+                 "20/11/2026 com rio_nivel_arbitrario só desde 09/11/2026 17:00",
+    },
+}
 
 # --------------------------------------------------------------------------- #
 # Quebras de série
@@ -195,8 +214,28 @@ REPROCESSAMENTOS = {
 # Consultas
 # --------------------------------------------------------------------------- #
 def mede_nivel(codigo: str) -> bool:
-    """Esta estação mede nível de rio nesta rede? (false = ausência estrutural, não intermitência)"""
+    """Esta estação mede nível de rio nesta rede HOJE? (false = ausência estrutural, não intermitência)
+
+    Estação de `PASSOU_A_MEDIR_NIVEL` mede: o trecho de antes sai por `antes_de_medir`.
+    """
     return codigo not in NAO_MEDE_NIVEL
+
+
+def antes_de_medir(codigo: str, quando: datetime | None) -> bool:
+    """A leitura deste instante é de ANTES de a estação passar a medir nível (coluna de nível não vale)?
+
+    `quando` desconhecido não corta: quem não sabe a hora não decide que é do lado de antes.
+    """
+    p = PASSOU_A_MEDIR_NIVEL.get(codigo)
+    if not p or quando is None:
+        return False
+    return quando < datetime.fromisoformat(p["desde"])
+
+
+def mede_desde(codigo: str) -> datetime | None:
+    """O instante em que a estação passou a medir nível, ou None (sempre mediu, ou nunca)."""
+    p = PASSOU_A_MEDIR_NIVEL.get(codigo)
+    return datetime.fromisoformat(p["desde"]) if p else None
 
 
 def quebra_de(codigo: str) -> dict | None:
