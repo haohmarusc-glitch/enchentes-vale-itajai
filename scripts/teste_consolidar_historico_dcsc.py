@@ -195,10 +195,39 @@ class Cadastro(unittest.TestCase):
         r = resumo_da_estacao(self.GASPAR, e)
         self.assertEqual(r["cristas_candidatas"], [])
         self.assertEqual(r["descartadas_isoladas"], [])
+        # Gaspar passou a medir em 09/11/2026 17:00 (PASSOU_A_MEDIR_NIVEL, 20/11/2026): o que vinha
+        # antes não é rio e sai da coluna de nível, como no lado cortado de uma quebra de série.
+        self.assertIsNone(r["nao_mede_nivel"])
+        self.assertEqual(r["leituras_com_nivel"], 0)
+        self.assertIsNone(r["nivel_max_m"])
+        self.assertEqual(r["buracos_maiores_que_6h"], 0, "os anos sem medir não são buraco de coleta")
+
+    def test_gaspar_depois_de_passar_a_medir_tem_nivel(self):
+        from datetime import timedelta
+        base = datetime(2026, 11, 9, 16, 0)
+        itens = {}
+        for i in range(24):
+            t = base + timedelta(minutes=10 * i)
+            it = item(t.isoformat(timespec="seconds") + ".000", 3.0 + i / 100, codigo=self.GASPAR)
+            itens[it["ts"]] = it
+        r = resumo_da_estacao(self.GASPAR, {"itens": itens, "janelas": 1, "coletas": [], "fim_janelas": ""})
+        self.assertEqual(r["leituras_com_nivel"], 18, "17:00 em diante: 6 das 24 leituras são de antes")
+        self.assertEqual(r["nivel_max_m"], 3.23)
+
+    def test_estacao_meteorologica_nao_publica_crista(self):
+        """Blumenau (type=Meteo) continua em NAO_MEDE_NIVEL: número na coluna não vira crista."""
+        from datetime import timedelta
+        base = datetime(2023, 3, 16, 0, 0)
+        itens = {}
+        for i in range(300):
+            t = base + timedelta(minutes=10 * i)
+            it = item(t.isoformat(timespec="seconds") + ".000", 0.84 if i == 99 else 0.0, codigo="DCSC-00026")
+            itens[it["ts"]] = it
+        r = resumo_da_estacao("DCSC-00026", {"itens": itens, "janelas": 1, "coletas": [], "fim_janelas": ""})
+        self.assertEqual(r["cristas_candidatas"], [])
         self.assertIn("tem_nivel_do_rio=false", r["nao_mede_nivel"])
         # as contagens ficam: descrevem o que a fonte devolveu, e sumir com elas seria outra mentira
         self.assertEqual(r["leituras_com_nivel"], 300)
-        self.assertEqual(r["nivel_max_m"], 0.84)
 
     def test_o_trecho_cortado_NAO_conta_como_buraco_de_coleta(self):
         """Buraco é "a estação parou de mandar". Guabiruba não parou — mudou de grandeza.

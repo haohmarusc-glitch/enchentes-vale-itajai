@@ -58,6 +58,9 @@ ARMADILHAS que este coletor já trata (todas vistas em 01/09):
       passaram a ser recusadas e o `ultimo_nivel_sc.json` parou — Brusque, Ascurra e Rio dos Cedros ficaram
       cinza. O quarto degrau, `site`, é o texto exato da consulta do mapa deles (`consulta_dcsc_site.py`):
       traz nível, `type` e `filter`, mas não `rio_alarmes`, então a faixa estadual sai `indisponivel`.
+      O `timestamp` dela vem SEM fuso e em hora de Brasília (`consulta_dcsc_site.instante`; a armadilha 5
+      continua valendo para carimbo com offset). E o `filter` trouxe Gaspar declarando nível: ver
+      `cadastro_dcsc.PASSOU_A_MEDIR_NIVEL` (a armadilha 8 vale hoje só para Blumenau).
 
 Uso:
     python3 scripts/coleta_nivel_sc.py            # imprime + grava data/tempo-real/ultimo_nivel_sc.json
@@ -262,16 +265,14 @@ def e_numero(valor) -> bool:
 
 
 def hora_local(carimbo: str | None) -> str | None:
-    """UTC do GraphQL -> hora de Brasília sem fuso, que é o formato do projeto (ver armadilha 5)."""
-    if not carimbo:
-        return None
-    try:
-        t = datetime.fromisoformat(str(carimbo).replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    if t.tzinfo is None:
-        t = t.replace(tzinfo=timezone.utc)
-    return t.astimezone(FUSO_BRASILIA).replace(tzinfo=None).isoformat(timespec="seconds")
+    """Carimbo do GraphQL -> hora de Brasília sem fuso, que é o formato do projeto.
+
+    Com offset (até 17/11/2026, UTC) converte; sem offset (consulta do site, desde 20/11/2026) já é
+    Brasília. A regra mora em `consulta_dcsc_site.instante`.
+    """
+    from consulta_dcsc_site import hora_de_brasilia
+
+    return hora_de_brasilia(carimbo)
 
 
 def _post(query: str) -> dict:
