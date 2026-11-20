@@ -480,6 +480,17 @@ o projeto.
 
 ## Pendências
 
+- [ ] **API da Defesa Civil de SC fechada numa lista de consultas (20/11/2026).** Entre 17/11 10h31 e 20/11,
+  `monitoramento.defesacivil.sc.gov.br/graphql` passou a responder HTTP 400 `QUERY_NOT_ALLOWED` ("Use exatamente o texto
+  das consultas do guia da API (docs/guia-da-api.md)") a toda `Tags_data` nossa. O `ultimo_nivel_sc.json` parou em
+  17/11 10h31 e **Brusque, Ascurra e Rio dos Cedros ficaram cinza** (só têm leitura pela rede estadual; leitura antiga
+  não pinta). Correção: o texto exato da consulta do mapa da DCSC, copiado do JavaScript do site
+  (`scripts/consulta_dcsc_site.py`), entra como último degrau no `coleta_nivel_sc.py` e como reserva na chuva e no
+  `gaspar_estadual.py`; o `Historic` segue aceito. Essa consulta **não traz `rio_alarmes`**: a faixa estadual sai
+  `indisponivel` até haver consulta aceita que a traga. O "guia da API" não foi achado publicado. Efeito colateral a
+  decidir: ela traz `filter.tem_nivel_do_rio`, e a API declara **true para Gaspar (DCSC-00005)**, que o cadastro tem
+  como "não mede nível"; pela regra de 03/09 a declaração vence, e às 16h40 de 20/11 o número (2,06 m) era igual ao de
+  Rio dos Cedros na mesma hora. Leitura com `usar_para_cota: false`, não pinta.
 - [ ] **Avisos da Defesa Civil de SC: o site recusa conexão de fora do Brasil (08/11/2026).** A VPS (Helsinque) dá
   `ConnectTimeoutError` (07/11); o runner do GitHub dá timeout no `robots.txt` (run 42435172062, duas tentativas); a
   sessão de código toma `Connection reset`. Do Brasil, pelo celular do Jefferson, o site abre (08/11, 22:58). O caminho
@@ -494,8 +505,8 @@ o projeto.
   municípios pelo código IBGE, e grava `ultimo_alertas_idap.json`; `publicar_tempo_real.sh` o leva ao `tempo-real` se
   tiver até 45 min. O feed tem ~38 MB e leva ~85 s: roda em **linha própria do cron**, fora do corte de 60 s (comando no
   docstring). Guarda só ~12 h; alerta vigente que sai do feed fica no arquivo. Endereço citado por terceiros, sem
-  documentação oficial achada. **Não é faixa nem aviso de cota.** Pendente: (1) ligar a linha do cron na VPS;
-  (2) decidir se e como o site e o chat mostram estes alertas (hoje leem só `ultimo_avisos_dcsc.json`).
+  documentação oficial achada. **Não é faixa nem aviso de cota.** A linha do cron está ligada (o arquivo sobe ao
+  `tempo-real` em 20/11). Pendente: decidir se e como o site e o chat mostram estes alertas (hoje leem só `ultimo_avisos_dcsc.json`).
 - [x] **Medidor de descida — conferência da JICA (08/11/2026).** `scripts/medir_descida.py` mede cada ponto da Tabela 7.5.1
   a partir do pico de Rio do Sul, régua por régua até Santa Regina (DC-11), com cinco métodos, IC90 por bootstrap e maré
   tirada por análise harmônica. Relatório em `docs/DESCIDA-MEDIDA.md`. Resultado com as cheias de jul–nov/2026:

@@ -137,15 +137,23 @@ def consultar(transporte=None) -> Any:
         return transporte(URL, Q_TAGS)
     import requests
 
-    espera_turno()
-    r = requests.post(
-        URL,
-        json={"operationName": "Tags_data", "query": Q_TAGS},
-        headers={"User-Agent": USER_AGENT, "Content-Type": "application/json"},
-        timeout=30,
-    )
-    r.raise_for_status()
-    return r.json()
+    from consulta_dcsc_site import corpo, tags_data
+
+    def pedir(query: str) -> dict:
+        espera_turno()
+        return corpo(requests.post(
+            URL,
+            json={"operationName": "Tags_data", "query": query},
+            headers={"User-Agent": USER_AGENT, "Content-Type": "application/json"},
+            timeout=60,
+        ))
+
+    # Desde ~17/11/2026 a API só aceita uma lista fechada de consultas: se recusar a `Q_TAGS`, vai o
+    # texto exato da consulta do site da DCSC (`consulta_dcsc_site.py`), que traz os mesmos campos.
+    estacoes, consulta = tags_data(pedir, Q_TAGS)
+    if consulta["motivo"]:
+        print(f"aviso: {consulta['motivo']}; usada a consulta do site da DCSC", file=sys.stderr)
+    return {"data": {"tags_data": {"qualle_meteorologia": estacoes}}}
 
 
 def estacoes(resposta: Any) -> list[dict]:

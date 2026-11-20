@@ -181,17 +181,24 @@ def converter(estacoes: list[dict]) -> tuple[list[dict], list[str]]:
 
 
 def baixar_estacoes() -> list[dict]:
+    """A `CONSULTA` curta; se a API recusar (lista fechada desde ~17/11/2026), o texto exato da do site.
+
+    A do site também pede o nível do rio. Não importa: `converter` nunca o lê (teste
+    `test_a_leitura_nao_carrega_nivel`).
+    """
     import requests
 
-    espera_turno()
-    r = requests.post(GRAPHQL, json={"query": CONSULTA, "operationName": "Tags_data"},
-                      headers={"User-Agent": USER_AGENT}, timeout=60)
-    r.raise_for_status()
-    corpo = r.json()
-    if corpo.get("errors"):
-        raise RuntimeError(f"consulta recusada: {corpo['errors']}")
-    return (((corpo.get("data") or {}).get("tags_data") or {})
-            .get("qualle_meteorologia") or [])
+    from consulta_dcsc_site import corpo, tags_data
+
+    def pedir(query: str) -> dict:
+        espera_turno()
+        return corpo(requests.post(GRAPHQL, json={"query": query, "operationName": "Tags_data"},
+                                   headers={"User-Agent": USER_AGENT}, timeout=60))
+
+    estacoes, consulta = tags_data(pedir, CONSULTA)
+    if consulta["motivo"]:
+        print(f"aviso: {consulta['motivo']}; usada a consulta do site da DCSC", file=sys.stderr)
+    return estacoes
 
 
 def main() -> int:
