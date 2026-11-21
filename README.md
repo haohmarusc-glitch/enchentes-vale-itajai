@@ -487,7 +487,8 @@ o projeto.
   não pinta). Correção: o texto exato da consulta do mapa da DCSC, copiado do JavaScript do site
   (`scripts/consulta_dcsc_site.py`), entra como último degrau no `coleta_nivel_sc.py` e como reserva na chuva e no
   `gaspar_estadual.py`; o `Historic` segue aceito. Essa consulta **não traz `rio_alarmes`**: a faixa estadual sai
-  `indisponivel` até haver consulta aceita que a traga. O "guia da API" não foi achado publicado. A mesma consulta
+  `indisponivel` até haver consulta aceita que a traga. O "guia da API" não foi achado publicado; pedido à
+  Defesa Civil de SC pela Ouvidoria em 20/11 (C37, `docs/oficios-prontos.md`). A mesma consulta
   manda o carimbo **sem fuso, em hora de Brasília** (19h55 às 22h57 UTC, pelo `Date` do servidor); lido como UTC,
   toda leitura sairia 3 h velha e continuaria cinza — `consulta_dcsc_site.instante` trata isso.
   **Gaspar (DCSC-00005) passou a medir nível em 09/11/2026 17h00** (decisão do Jefferson, 20/11: "conforme

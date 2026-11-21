@@ -988,3 +988,66 @@ Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
+
+## C37 — Defesa Civil de SC: guia da API, faixa de inundação e fuso — ✅ ENVIADO em 20/11/2026 21h30 BRT para a Ouvidoria (Gmail, conversa `1a1fb829a4e7f51a`, para ouvidoria@defesacivil.sc.gov.br), por pedido do Jefferson
+
+**Origem.** Entre 17/11 10h31 e 20/11/2026, a API GraphQL de monitoramento.defesacivil.sc.gov.br passou a responder
+HTTP 400 `QUERY_NOT_ALLOWED` ("Use exatamente o texto das consultas do guia da API (docs/guia-da-api.md)") a toda
+consulta `Tags_data` nossa. O projeto passou a usar o texto exato da consulta do mapa público
+(`scripts/consulta_dcsc_site.py`, #577 e #578), que não traz `rio_alarmes`. Ituporanga, Lontras, Ibirama, Timbó,
+Trombudo Central, Vidal Ramos e Botuverá ficaram sem a faixa estadual (em 17/11, Ituporanga e Lontras estavam em
+alerta). O guia citado não foi achado publicado: `/docs/guia-da-api.md` no próprio host devolve a página do mapa, e
+a busca na internet não achou documento oficial.
+
+**Destinatário — histórico do envio:**
+1. **20/11/2026 21h13 BRT, para monitoramento@sdc.sc.gov.br** (conversa `1a1fb73517eadd88`): **voltou**, "550 5.1.1
+   The email account that you tried to reach does not exist". O endereço vinha de um resumo de busca que citava a
+   página do SMS 40199 em sc.gov.br. A página não foi aberta para conferir (a sessão não alcança sc.gov.br).
+   O texto do item 2 abaixo é o mesmo, sem a linha de encaminhamento.
+2. **20/11/2026 21h30 BRT, para ouvidoria@defesacivil.sc.gov.br**, por escolha do Jefferson. O endereço está
+   publicado na página do radar do CIRAM/Epagri. Sem aviso de falha logo depois do envio.
+
+Outros endereços achados em fontes públicas, nenhum da área de monitoramento: ascom@defesacivil.sc.gov.br
+(imprensa, (48) 3664-7000), secretario@ e adjunto@defesacivil.sc.gov.br (lista em site de homologação, pode estar
+desatualizada), geahu@ e gepes@defesacivil.sc.gov.br. O caminho mais garantido para a Gerência continua sendo o
+telefone geral, (48) 3664-7000.
+
+- Sem link do site (regra de 02/10/2026). O site ainda não está aberto: o texto diz "projeto".
+- Pede só o guia, a consulta permitida com a faixa e a confirmação do fuso. Não pede acesso especial.
+
+**Assunto:** API de monitoramento — pedido do guia das consultas (docs/guia-da-api.md)
+
+Prezada Ouvidoria,
+
+Peço, por gentileza, que encaminhem esta mensagem à Gerência de Monitoramento e Alerta.
+
+Meu nome é Jefferson. Sou morador do Vale do Itajaí e desenvolvo um projeto sem fins comerciais sobre as enchentes
+dos rios Itajaí-Açu e Itajaí-Mirim. Ele ainda não está aberto ao público. O projeto lê o nível das estações da rede
+estadual, sempre com a fonte citada. A leitura é automática, uma consulta a cada 15 minutos, com identificação do
+projeto no cabeçalho.
+
+Entre 17 e 20/11/2026, a API de monitoramento.defesacivil.sc.gov.br passou a recusar as nossas consultas com esta
+mensagem:
+
+"Consulta não permitida. Use exatamente o texto das consultas do guia da API (docs/guia-da-api.md)."
+
+Respeitamos a mudança, e hoje usamos apenas o texto da consulta que o próprio mapa público faz. Não encontramos,
+porém, o guia citado na mensagem. Gostaria de pedir:
+
+1. O guia da API. Onde ele está publicado? Se não for público, poderiam nos enviar?
+
+2. A classificação de inundação das estações (normal, atenção, alerta e emergência, que antes vinha no campo
+   rio_alarmes). Existe consulta permitida que a traga? O projeto usava essa faixa nas cidades sem régua municipal,
+   como Ituporanga, Lontras, Ibirama e Botuverá. Sem ela, essas cidades ficam sem a indicação da Defesa Civil.
+
+3. O horário das leituras. Antes ele vinha em UTC com fuso indicado, e hoje vem sem fuso. Pelo que comparamos, está
+   no horário de Brasília. Está correto?
+
+Se houver cadastro ou termo de uso para o acesso, faço com prazer.
+
+Se quiserem conhecer o projeto, basta me enviar um e-mail para cadastro.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
