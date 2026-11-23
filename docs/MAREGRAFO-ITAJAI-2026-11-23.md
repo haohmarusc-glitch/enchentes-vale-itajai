@@ -91,7 +91,27 @@ O Iate Clube de Cabeçudas fica na foz do Itajaí-Açu, então em cheia a difere
 Comparado com o CIRAM (`coleta_mare_ciram.py`, estação de Balneário Camboriú): este marégrafo fica **na foz, em
 Itajaí**, e a referência está escrita. No CIRAM, `REFERENCIA_VERTICAL` segue vazia e a tela diz "referência pendente".
 
-## 7. Decisões que ficam com o Jefferson
+## 7. O que foi decidido e feito (23/11/2026)
+
+O Jefferson decidiu as três ("Faça todos esses"):
+
+1. **Coletor e tela:** `scripts/coleta_maregrafo_itajai.py --publicar` roda no `publicar_tempo_real.sh` (uma consulta
+   por publicação), grava `data/tempo-real/ultimo_maregrafo_itajai.json` no formato versão 1 do CIRAM e sobe ao
+   `tempo-real` com o mesmo portão (até 30 min). O site mostra o painel "Maré medida na foz" em `/itajai`, antes do
+   do CIRAM, que fica ao lado com o título "Maré medida em Balneário Camboriú".
+2. **Altura no zero da DHN:** a planilha anual da UNIVALI **não** foi convertida. Contra a previsão do portal, a
+   diferença variou de −0,221 a −0,246 m nos 864 pontos de 22–25/11, o que não é um deslocamento fixo, e nenhuma fonte
+   escreve a conta. A altura em DHN com fonte é a da previsão do portal: o arquivo leva as próximas quatro
+   preamares e baixa-mares (`previsao.extremos`), e o painel as mostra com a referência que vem no arquivo.
+   `mare-itajai.json` continua só com horário.
+3. **Diferença observado − previsto:** sai com o nome da regra, da mesma estação e do mesmo horário (par previsto a
+   até 3 min), e o texto não a atribui só a vento e pressão.
+
+Portões: leitura que não fecha as contas da fonte (folga de 2 mm) não vira número; mais de 60 min ou do futuro, sem
+número; o site refaz a idade no relógio de agora. Testes em `scripts/teste_coleta_maregrafo_itajai.py`,
+`scripts/teste_publicar_tempo_real.py` e `web/src/dados/mareMedida.test.ts`.
+
+## 8. Decisões que ficavam com o Jefferson (antes de 23/11)
 
 1. Ligar um coletor deste marégrafo (leitura da página, no mesmo padrão do `coleta_itajai_portal.py`, só GET, com
    `User-Agent` do projeto, uma vez por publicação) e mostrar a maré medida em `/itajai` no lugar do CIRAM, ou ao lado.

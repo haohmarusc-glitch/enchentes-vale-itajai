@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import SimulacaoChegada from '../componentes/SimulacaoChegada'
 import PainelMareMedida from '../componentes/PainelMareMedida'
+import { URL_MAREGRAFO_ITAJAI } from '../dados/mareMedida'
 
 /**
  * O mapa carrega à parte, como o gráfico de picos.
@@ -90,7 +91,16 @@ export default function TelaItajai() {
             </>
           ) : null}
         </p>
-        <PainelMareMedida />
+        {/* Marégrafo na foz (decisão do Jefferson, 23/11/2026) e, ao lado, o do CIRAM, em Balneário Camboriú. */}
+        <PainelMareMedida
+          url={URL_MAREGRAFO_ITAJAI}
+          titulo="Maré medida na foz"
+          estacaoPadrao="Cabeçudas Iate Clube (MRG01), na foz do Itajaí-Açu"
+          fontePadrao="Defesa Civil de Itajaí / UNIVALI — marégrafo de Cabeçudas"
+          urlPadrao="https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/maregrafo"
+          contextoPadrao="Nível do mar na foz do Itajaí-Açu: não é régua de rio."
+        />
+        <PainelMareMedida titulo="Maré medida em Balneário Camboriú" notaDaTabua={false} />
       </section>
 
       {/* AGORA, RÉGUA POR RÉGUA.

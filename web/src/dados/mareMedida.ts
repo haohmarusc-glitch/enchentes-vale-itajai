@@ -23,6 +23,15 @@ const PADRAO =
 /** Dá para apontar para outra fonte sem recompilar, via .env do Vite. */
 export const URL_MARE_MEDIDA = import.meta.env?.VITE_URL_MARE_MEDIDA || PADRAO
 
+/**
+ * O marégrafo MRG01 (Cabeçudas Iate Clube), na foz, do portal da Defesa Civil de Itajaí (decisão do Jefferson de
+ * 23/11/2026; `scripts/coleta_maregrafo_itajai.py`). Mesmo formato (versão 1) e mesmos portões do arquivo do
+ * CIRAM; a referência é o zero da DHN, escrita pela fonte, e a maré prevista é a do mesmo painel.
+ */
+export const URL_MAREGRAFO_ITAJAI =
+  import.meta.env?.VITE_URL_MAREGRAFO_ITAJAI ||
+  'https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/ultimo_maregrafo_itajai.json'
+
 /** O coletor roda a cada publicação (15 min): arquivo mais velho que isto é de uma publicação parada. */
 export const MAX_IDADE_ARQUIVO_MIN = 30
 /** Cadência da estação é 15 min; uma hora sem medição nova já é estação parada. Igual ao coletor. */
@@ -43,6 +52,14 @@ export interface MareMedida {
     astronomicaM: number | null
     diferencaM: number | null
   } | null
+  /** De onde vem a maré astronômica da diferença, como o arquivo diz (null = a do CIRAM, formato antigo). */
+  astronomicaFonte: string | null
+  /** O aviso da fonte sobre o que o número é e o que não é. */
+  aviso: string | null
+  /** Próximas preamares e baixa-mares previstas pela MESMA fonte, com a referência dela (vazio se não veio). */
+  extremos: { tipo: 'preamar' | 'baixamar'; quando: Date; alturaM: number }[]
+  /** A referência da altura dos extremos, escrita no arquivo. */
+  referenciaDosExtremos: string | null
 }
 
 const texto = (v: unknown): string | null => (typeof v === 'string' && v.trim() ? v : null)
@@ -83,8 +100,27 @@ export function montarMareMedida(bruto: unknown): MareMedida | null {
     }
   }
 
+  // Extremos previstos: só com a referência escrita no arquivo e horário de Brasília sem fuso.
+  const prev = (d.previsao ?? null) as Record<string, unknown> | null
+  const referenciaDosExtremos = texto(prev?.referencia)
+  const extremos: MareMedida['extremos'] = []
+  if (referenciaDosExtremos && Array.isArray(prev?.extremos)) {
+    for (const e of prev!.extremos as unknown[]) {
+      const x = (e ?? {}) as Record<string, unknown>
+      const quando = texto(x.quando)
+      const alturaM = num(x.altura_m)
+      if ((x.tipo !== 'preamar' && x.tipo !== 'baixamar') || !quando || !RE_SEM_FUSO.test(quando) || alturaM === null) continue
+      const q = deBrasilia(quando)
+      if (!Number.isNaN(q.getTime())) extremos.push({ tipo: x.tipo, quando: q, alturaM })
+    }
+  }
+
   return {
     geradoEm,
+    astronomicaFonte: texto(d.astronomica_fonte),
+    aviso: texto(d.aviso),
+    extremos,
+    referenciaDosExtremos: extremos.length ? referenciaDosExtremos : null,
     fonte: texto(d.fonte) ?? 'EPAGRI/CIRAM',
     fonteUrl: texto(d.fonte_url),
     estacao: { nome, kmDaFoz: num(est?.km_da_foz) },
@@ -190,16 +226,20 @@ type Transporte = (url: string, init: RequestInit) => Promise<Response>
 export async function buscarMareMedida(
   sinal?: AbortSignal,
   transporte: Transporte = (url, init) => fetch(url, init),
+  url: string = URL_MARE_MEDIDA,
 ): Promise<MareMedida | null> {
   try {
-    return montarMareMedida(await buscarPublicacao(URL_MARE_MEDIDA, sinal, transporte))
+    return montarMareMedida(await buscarPublicacao(url, sinal, transporte))
   } catch {
     return null
   }
 }
 
 /** Busca ao abrir a página e a cada `intervaloMin`. Falha não guarda o anterior. */
-export function useMareMedida(intervaloMin = 5): { dado: MareMedida | null; carregado: boolean } {
+export function useMareMedida(
+  intervaloMin = 5,
+  url: string = URL_MARE_MEDIDA,
+): { dado: MareMedida | null; carregado: boolean } {
   const [estado, setEstado] = useState<{ dado: MareMedida | null; carregado: boolean }>({
     dado: null,
     carregado: false,
@@ -213,7 +253,7 @@ export function useMareMedida(intervaloMin = 5): { dado: MareMedida | null; carr
       emVoo.add(controle)
       const limite = setTimeout(() => controle.abort(), TEMPO_LIMITE_MS)
       try {
-        const dado = await buscarMareMedida(controle.signal)
+        const dado = await buscarMareMedida(controle.signal, undefined, url)
         if (vivo) setEstado({ dado, carregado: true })
       } finally {
         clearTimeout(limite)
@@ -229,7 +269,12 @@ export function useMareMedida(intervaloMin = 5): { dado: MareMedida | null; carr
       pararDeOuvir()
       for (const c of emVoo) c.abort()
     }
-  }, [intervaloMin])
+  }, [intervaloMin, url])
 
   return estado
+}
+
+/** Os extremos previstos que ainda não passaram, em ordem. */
+export function extremosFuturos(m: MareMedida | null, agora: Date): MareMedida['extremos'] {
+  return (m?.extremos ?? []).filter((e) => e.quando.getTime() >= agora.getTime())
 }

@@ -146,6 +146,26 @@ sys.exit(0 if d.get("versao") == 1 and d.get("estacao") and 0 <= idade <= 1800 e
   MARE_MEDIDA_ENTRY="$(printf '100644 blob %s\tultimo_mare_medida.json' "$BLOB_MARE_MEDIDA")"
 fi
 
+# ultimo_maregrafo_itajai.json: a maré MEDIDA na foz, marégrafo MRG01 (Cabeçudas Iate Clube) do portal da
+# Defesa Civil de Itajaí, no zero da DHN (decisão do Jefferson de 23/11/2026; docs/MAREGRAFO-ITAJAI-2026-11-23.md).
+# UMA consulta por publicação. Mesmo formato e mesmo portão do CIRAM: falha apaga o anterior e nunca segura o
+# nível; só sobe o que foi gerado há no máximo 30 min.
+MAREGRAFO_ITAJAI="$RAIZ/data/tempo-real/ultimo_maregrafo_itajai.json"
+if [ "$SECO" -eq 0 ] && [ -f "$RAIZ/scripts/coleta_maregrafo_itajai.py" ]; then
+  timeout 60 python3 scripts/coleta_maregrafo_itajai.py --publicar \
+    || echo "aviso: marégrafo de Itajaí não coletado; o nível ao vivo segue." >&2
+fi
+MAREGRAFO_ITAJAI_ENTRY=""
+if [ -f "$MAREGRAFO_ITAJAI" ] && python3 -c '
+import json, sys
+from datetime import datetime, timezone
+d = json.load(open(sys.argv[1]))
+idade = (datetime.now(timezone.utc) - datetime.fromisoformat(d["gerado_em"])).total_seconds()
+sys.exit(0 if d.get("versao") == 1 and d.get("estacao") and 0 <= idade <= 1800 else 1)' "$MAREGRAFO_ITAJAI" 2>/dev/null; then
+  BLOB_MAREGRAFO_ITAJAI="$(git hash-object -w "$MAREGRAFO_ITAJAI")"
+  MAREGRAFO_ITAJAI_ENTRY="$(printf '100644 blob %s\tultimo_maregrafo_itajai.json' "$BLOB_MAREGRAFO_ITAJAI")"
+fi
+
 # ultimo_ituporanga_centro.json: a régua do CENTRO de Ituporanga, do Boletim Diário da Prefeitura (decisão do
 # Jefferson de 08/10/2026). Vai em arquivo próprio, nunca em `leituras`: como leitura municipal ela desligaria
 # a classificação estadual da DCSC-00039. Sem cor na tela. Falha apaga o arquivo anterior e nunca segura o
@@ -232,6 +252,7 @@ TREE="$(
     [ -n "$BARRAGENS_ENTRY" ] && printf '%s\n' "$BARRAGENS_ENTRY"
     [ -n "$CLASSIFICACAO_ENTRY" ] && printf '%s\n' "$CLASSIFICACAO_ENTRY"
     [ -n "$MARE_MEDIDA_ENTRY" ] && printf '%s\n' "$MARE_MEDIDA_ENTRY"
+    [ -n "$MAREGRAFO_ITAJAI_ENTRY" ] && printf '%s\n' "$MAREGRAFO_ITAJAI_ENTRY"
     [ -n "$ITUPORANGA_CENTRO_ENTRY" ] && printf '%s\n' "$ITUPORANGA_CENTRO_ENTRY"
     [ -n "$RIO_DO_SUL_RIOS_ENTRY" ] && printf '%s\n' "$RIO_DO_SUL_RIOS_ENTRY"
     [ -n "$AVISOS_DCSC_ENTRY" ] && printf '%s\n' "$AVISOS_DCSC_ENTRY"

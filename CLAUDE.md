@@ -144,7 +144,7 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 
 ### Maré medida do CIRAM — REGRA (decisão de 07/10/2026)
 - Coleta a cada publicação (`coleta_mare_ciram.py --publicar`, uma consulta), arquivo `ultimo_mare_medida.json`,
-  painel "Maré medida perto da foz" em `/itajai`. Detalhes em `docs/MARE-MEDIDA-CIRAM.md`.
+  painel "Maré medida em Balneário Camboriú" em `/itajai` (antes "perto da foz"). Detalhes em `docs/MARE-MEDIDA-CIRAM.md`.
 - Número só com horário, estação, unidade e **referência vertical** identificados. Hoje a referência está pendente
   (`REFERENCIA_VERTICAL` vazio, teste trava): a tela diz "referência pendente", sem número. Entrada nova só com a
   fonte escrita, por decisão do Jefferson.
@@ -152,6 +152,12 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   estação e nunca é atribuída só a vento e pressão (pode ter influência do rio). Nunca "maré meteorológica" na tela.
 - Leitura antiga nunca como atual: medição com mais de 60 min ou do futuro é "Medição indisponível". A tábua de
   maré do site continua sendo a previsão, com fonte e horário à parte.
+- **Marégrafo de Itajaí na foz (decisão do Jefferson, 23/11/2026):** `coleta_maregrafo_itajai.py --publicar` lê o
+  MRG01 (Cabeçudas Iate Clube) do portal da Defesa Civil de Itajaí → `ultimo_maregrafo_itajai.json`, mesmo formato e
+  mesmos portões do CIRAM, painel "Maré medida na foz" em `/itajai` (o do CIRAM fica ao lado, "Maré medida em
+  Balneário Camboriú"). A referência é o **zero da DHN**, escrita pela fonte (`nivel_dhn`, título "(DHN)"); leitura
+  cujas contas da fonte não fecham não vira número. A diferença usa a previsão do mesmo painel, mesma estação e
+  mesmo horário. Detalhes em `docs/MAREGRAFO-ITAJAI-2026-11-23.md`.
 
 ### Tábua de maré do porto de Itajaí — REGRA (decisão do Jefferson, 08/10/2026)
 - **A fonte é a previsão harmônica da UNIVALI** (Laboratório de Oceanografia Física, Prof. Mauro Michelena Andrade
@@ -162,6 +168,9 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   com `--substituir`). Detalhes em `docs/TABUA-UNIVALI-2026.md`.
 - **Só o horário entra**: a planilha não declara a referência vertical, então `altura_m` não existe e
   `_meta.referencia_altura` é `null`. Nenhuma tela ou texto nomeia referência de altura por texto fixo.
+  A planilha **não se converte** para o zero da DHN: em 22–25/11/2026 ela diferiu da previsão do portal (DHN) entre
+  −0,221 e −0,246 m, sem conta escrita. Altura em DHN com fonte é só a das próximas marés que o portal publica
+  (`previsao.extremos` do marégrafo), mostrada no painel do marégrafo com a referência que vem no arquivo.
 - **A fonte na tela e no chat vem de `_meta.fonte_curta`**, nunca de texto fixo ("tábua da Marinha" foi erro de
   crédito apontado pelo Prof. Mauro). Teste em `comandos/quinta.test.ts`.
 - Preamar e baixa-mar são os extremos locais da curva; pares adjacentes com amplitude menor que 2 cm (ondulação de
