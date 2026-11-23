@@ -1,5 +1,9 @@
 # Maré medida do CIRAM — coleta, publicação e tela (07/10/2026)
 
+> **23/11/2026:** o marégrafo de Itajaí, na foz (MRG01, portal da Defesa Civil de Itajaí), entrou ao lado, no
+> mesmo formato e com a referência escrita (zero da DHN): `docs/MAREGRAFO-ITAJAI-2026-11-23.md`. O painel do CIRAM
+> passou a se chamar "Maré medida em Balneário Camboriú".
+
 **Decisão do Jefferson (07/10/2026):** implementar a coleta agendada, a publicação e a tela da maré medida da
 EPAGRI/CIRAM, com quatro condições:
 

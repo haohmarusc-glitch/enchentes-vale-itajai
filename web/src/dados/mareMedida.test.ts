@@ -136,3 +136,94 @@ test('sem o arquivo (rede fora, VPS sem a coleta): indisponível', async () => {
   const ok = await buscarMareMedida(undefined, async () => new Response(JSON.stringify(publicado()), { status: 200 }))
   assert.equal(ok?.estacao.nome, 'Balneário Camboriú')
 })
+
+// --- Marégrafo de Itajaí, MRG01 (decisão do Jefferson de 23/11/2026) ---------------------------------------------
+
+const AGORA_MRG = deBrasilia('2026-11-23T09:42:00')
+
+/** O arquivo que `coleta_maregrafo_itajai.py` publicou às 09:42 de 23/11/2026, conferido contra o portal. */
+function maregrafo(extra: Record<string, unknown> = {}): Record<string, any> {
+  return {
+    versao: 1,
+    gerado_em: '2026-11-23T12:42:00+00:00',
+    fonte: 'Defesa Civil de Itajaí / UNIVALI — marégrafo de Cabeçudas',
+    fonte_url: 'https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/maregrafo',
+    estacao: { id: 'itajai-cabecudas', nome: 'Cabeçudas Iate Clube (MRG01), na foz do Itajaí-Açu', km_da_foz: 0 },
+    unidade: 'm',
+    referencia_vertical: {
+      status: 'confirmada',
+      descricao: 'zero da DHN (nível de redução)',
+      fonte: 'portal da Defesa Civil de Itajaí, painel "MRG01 - Iate Clube - Maré Medida e Maré Prevista (DHN)"',
+    },
+    situacao: 'medindo',
+    ultima_medicao: {
+      medido_em: '2026-11-23T09:40:03',
+      observada_m: 0.584,
+      astronomica_m: 0.379,
+      diferenca_observado_astronomica_m: 0.205,
+    },
+    astronomica_fonte: 'a previsão que o próprio portal publica para o MRG01, no mesmo horário e no zero da DHN',
+    previsao: {
+      referencia: 'zero da DHN (nível de redução)',
+      extremos: [
+        { tipo: 'preamar', quando: '2026-11-23T13:00', altura_m: 0.96 },
+        { tipo: 'baixamar', quando: '2026-11-23T20:05', altura_m: 0.15 },
+      ],
+    },
+    aviso: 'Nível do mar na foz do Itajaí-Açu, no zero da DHN: não é régua de rio.',
+    ...extra,
+  }
+}
+
+test('marégrafo de Itajaí: nível no zero da DHN, com a diferença da mesma estação', () => {
+  const m = montarMareMedida(maregrafo())
+  const e = estadoDaMareMedida(m, AGORA_MRG)
+  assert.equal(e.tipo, 'medida')
+  const { titulo, detalhe } = textoDaMareMedida(e)
+  assert.equal(titulo, 'Nível observado: 0,58 m')
+  assert.match(detalhe, /23\/11 às 09:40 \(Brasília\)/)
+  assert.match(detalhe, /zero da DHN/)
+  assert.equal(e.tipo === 'medida' ? comSinal(e.diferencaM!) : '', '+0,21 m')
+  assert.match(m!.astronomicaFonte!, /mesmo horário/)
+  assert.match(m!.aviso!, /não é régua de rio/)
+})
+
+test('marégrafo de Itajaí: extremos previstos com a referência escrita, só os que não passaram', async () => {
+  const { extremosFuturos } = await import('./mareMedida')
+  const m = montarMareMedida(maregrafo())!
+  assert.equal(m.referenciaDosExtremos, 'zero da DHN (nível de redução)')
+  assert.deepEqual(extremosFuturos(m, AGORA_MRG).map((e) => e.alturaM), [0.96, 0.15])
+  assert.deepEqual(extremosFuturos(m, deBrasilia('2026-11-23T14:00:00')).map((e) => e.tipo), ['baixamar'])
+})
+
+test('marégrafo de Itajaí: extremo sem referência, com fuso ou sem altura não entra', () => {
+  assert.deepEqual(montarMareMedida(maregrafo({ previsao: { extremos: maregrafo().previsao.extremos } }))!.extremos, [])
+  const ruins = montarMareMedida(
+    maregrafo({
+      previsao: {
+        referencia: 'zero da DHN',
+        extremos: [
+          { tipo: 'preamar', quando: '2026-11-23T13:00-03:00', altura_m: 0.96 },
+          { tipo: 'baixamar', quando: '2026-11-23T20:05', altura_m: null },
+          { tipo: 'maré', quando: '2026-11-23T20:05', altura_m: 0.1 },
+        ],
+      },
+    }),
+  )!
+  assert.deepEqual(ruins.extremos, [])
+  assert.equal(ruins.referenciaDosExtremos, null)
+})
+
+test('marégrafo de Itajaí: medição de mais de 60 min não aparece como atual', () => {
+  const e = estadoDaMareMedida(montarMareMedida(maregrafo()), deBrasilia('2026-11-23T10:41:00'))
+  assert.equal(e.tipo, 'indisponivel', 'o arquivo também passou dos 30 min')
+  const velha = maregrafo({ gerado_em: '2026-11-23T13:41:00+00:00' })
+  assert.equal(estadoDaMareMedida(montarMareMedida(velha), deBrasilia('2026-11-23T10:41:00')).tipo, 'antiga')
+})
+
+test('o arquivo do CIRAM, sem os campos novos, continua igual', () => {
+  const m = montarMareMedida(publicado(CONFIRMADA))!
+  assert.equal(m.astronomicaFonte, null)
+  assert.equal(m.aviso, null)
+  assert.deepEqual(m.extremos, [])
+})

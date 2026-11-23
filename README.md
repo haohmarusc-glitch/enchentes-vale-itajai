@@ -480,12 +480,13 @@ o projeto.
 
 ## Pendências
 
-- [ ] **Marégrafo de Itajaí (Cabeçudas Iate Clube) no portal da Defesa Civil — levantamento de 23/11/2026, nada ligado**
-  (`docs/MAREGRAFO-ITAJAI-2026-11-23.md`; aviso do Prof. Mauro, UNIVALI, 06/11). `robots.txt` livre; os dados vêm no
-  `data-page` de `/monitoramento/maregrafo`: leituras de 10 em 10 min (24 h, UTC com `Z`) no **zero da DHN** e no IBGE,
-  com as contas fechando em todas; previsão de 3 dias que bate com a UNIVALI no horário (±5 min) e com a Marinha na
-  altura (±5 cm). As cotas da página estão desabilitadas. Decidir: coletor e maré medida em `/itajai`; altura da tábua
-  da UNIVALI no zero da DHN; diferença observado − previsto da mesma estação.
+- [x] **Marégrafo de Itajaí (Cabeçudas Iate Clube) ligado ao site (decisão do Jefferson, 23/11/2026)**
+  (`docs/MAREGRAFO-ITAJAI-2026-11-23.md`; aviso do Prof. Mauro, UNIVALI, 06/11). `coleta_maregrafo_itajai.py --publicar`
+  roda a cada publicação e grava `ultimo_maregrafo_itajai.json`: nível no **zero da DHN** de 10 em 10 min (só com as
+  contas da fonte fechando), diferença entre nível observado e maré astronômica prevista do mesmo painel, e as
+  próximas preamares e baixa-mares com altura em DHN. Painel "Maré medida na foz" em `/itajai`, com o do CIRAM ao
+  lado. A planilha anual da UNIVALI **não** foi convertida para DHN (diferença de −0,221 a −0,246 m contra o portal,
+  sem conta escrita): segue só com horário. **Falta:** `scripts/deploy.sh` na VPS.
 - [ ] **API da Defesa Civil de SC fechada numa lista de consultas (20/11/2026).** Entre 17/11 10h31 e 20/11,
   `monitoramento.defesacivil.sc.gov.br/graphql` passou a responder HTTP 400 `QUERY_NOT_ALLOWED` ("Use exatamente o texto
   das consultas do guia da API (docs/guia-da-api.md)") a toda `Tags_data` nossa. O `ultimo_nivel_sc.json` parou em

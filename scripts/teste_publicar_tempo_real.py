@@ -183,6 +183,23 @@ class Publicador(unittest.TestCase):
                 self.assertEqual(r.returncode, 0, r.stderr)
                 self.assertEqual(self.arvore(base, r.stdout), {"ultimo.json"})
 
+    def test_leva_o_maregrafo_de_itajai_quando_e_desta_coleta(self):
+        """Marégrafo de Itajaí (decisão de 23/11/2026): mesmo portão da maré do CIRAM."""
+        base = self.monta({"ultimo_maregrafo_itajai.json": {**self.mare_medida(2), "estacao": {"id": "itajai-cabecudas"}}})
+        r = self.roda(base)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("ultimo_maregrafo_itajai.json", self.arvore(base, r.stdout))
+
+    def test_maregrafo_de_itajai_velho_ou_quebrado_nao_sobe(self):
+        for nome, conteudo in {"velho": json.dumps(self.mare_medida(31)), "quebrado": "{quebrado",
+                               "sem estação": json.dumps({**self.mare_medida(2), "estacao": None})}.items():
+            with self.subTest(nome):
+                base = self.monta({})
+                (base / "data" / "tempo-real" / "ultimo_maregrafo_itajai.json").write_text(conteudo, encoding="utf-8")
+                r = self.roda(base)
+                self.assertEqual(r.returncode, 0, r.stderr)
+                self.assertEqual(self.arvore(base, r.stdout), {"ultimo.json"})
+
     @staticmethod
     def alertas_idap(idade_min: int) -> dict:
         from datetime import datetime, timedelta, timezone
