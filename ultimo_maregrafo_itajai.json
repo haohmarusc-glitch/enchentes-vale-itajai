@@ -1,0 +1,59 @@
+{
+  "versao": 1,
+  "gerado_em": "2026-11-28T21:31:46+00:00",
+  "fonte": "Defesa Civil de Itajaí / UNIVALI — marégrafo de Cabeçudas",
+  "fonte_url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/maregrafo",
+  "estacao": {
+    "id": "itajai-cabecudas",
+    "nome": "Cabeçudas Iate Clube (MRG01), na foz do Itajaí-Açu",
+    "endpoint": "/monitoramento/maregrafo",
+    "km_da_foz": 0
+  },
+  "horario": "As leituras vêm em UTC com 'Z' e as previsões com '-03:00'; aqui `medido_em` e os extremos são horário de Brasília sem fuso, como o resto do projeto.",
+  "unidade": "m",
+  "unidade_na_fonte": "metro (campos nivel_* da página)",
+  "referencia_vertical": {
+    "status": "confirmada",
+    "descricao": "zero da DHN (nível de redução)",
+    "fonte": "painel “MRG01 - Iate Clube - Maré Medida e Maré Prevista (DHN)” do portal da Defesa Civil de Itajaí, campo nivel_dhn, conferido em 23/11/2026"
+  },
+  "situacao": "medindo",
+  "frescor_max_min": 60,
+  "idade_min_na_coleta": 1.6,
+  "leituras_coerentes": 144,
+  "leituras_na_fonte": 144,
+  "ultima_medicao": {
+    "medido_em": "2026-11-28T18:30:09",
+    "observada_m": 0.783,
+    "astronomica_m": 0.539,
+    "diferenca_observado_astronomica_m": 0.244
+  },
+  "astronomica_fonte": "a previsão que o próprio portal publica para o MRG01 (Parceria Defesa Civil Itajaí / UNIVALI), no mesmo horário e no zero da DHN",
+  "previsao": {
+    "fonte": "previsão publicada no mesmo painel (Parceria Defesa Civil Itajaí / UNIVALI)",
+    "referencia": "zero da DHN (nível de redução)",
+    "extremos": [
+      {
+        "tipo": "baixamar",
+        "quando": "2026-11-28T20:55",
+        "altura_m": 0.3
+      },
+      {
+        "tipo": "preamar",
+        "quando": "2026-11-28T22:20",
+        "altura_m": 0.32
+      },
+      {
+        "tipo": "baixamar",
+        "quando": "2026-11-29T01:00",
+        "altura_m": 0.19
+      },
+      {
+        "tipo": "preamar",
+        "quando": "2026-11-29T05:30",
+        "altura_m": 0.91
+      }
+    ]
+  },
+  "aviso": "Nível do mar na foz do Itajaí-Açu, no zero da DHN: não é régua de rio e não se compara com cota de rio. A diferença para a maré prevista não tem uma causa só: pode vir de vento, pressão, da água do rio e de outros efeitos."
+}
